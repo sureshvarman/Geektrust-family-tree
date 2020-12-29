@@ -1,0 +1,29 @@
+//
+// Seed data
+// Format:
+// 		<name>:<gender>
+//      <member(<name>:<gender>)>-<member(<name>:<gender>)>
+// 		<parents>
+// 		<tab><child#1>-<theirspouse> #left is child, right is their spouse
+// 		<tab><child#2>-<theirspouse>
+
+King Shan:male-Queen Anga:female
+    chit:male-Amba:female
+        Dritha:female-Jaya:male
+            Yodhan:male
+        Tritha:female
+        Vritha:male
+    Ish:male
+    Vich:male-Lika:female
+        Vila:female
+        Chika:female
+    Aras:male-Chitra:female
+        Jnki:female-Arit:male
+            Laki:male-Lavnya:female
+        Ahit:male
+    Satya:female-Vyan:male
+        Asva:male-Satvy:female
+            Vasa:male
+        Vyas:male-Krpi:female
+            Kriya:male-Krithi:female
+        Atya:female
