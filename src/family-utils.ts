@@ -14,6 +14,15 @@ export interface IFamilyTree {
 	getSons(name: string): Array<IFamilyMember>;
 	getDaughters(name: string): Array<IFamilyMember>;
 	getSiblings(name: string, gender?: Tgender): Array<IFamilyMember>;
+
+	getSisterInLaws(name: string): Array<IFamilyMember>;
+	getBrotherInLaws(name: string): Array<IFamilyMember>;
+
+	getMaternalAunts(name: string): Array<IFamilyMember>;
+	getPaternalAunts(name: string): Array<IFamilyMember>;
+
+	getMaternalUncles(name: string): Array<IFamilyMember>;
+	getPaternalUncles(name: string): Array<IFamilyMember>;
 }
 
 export interface IFamilyMember {

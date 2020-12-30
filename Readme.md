@@ -25,10 +25,12 @@
 ```
 `
 
+### Running Test
+```
+npm run test
+```
 
-
-### Coverage Report
-
+#### Test output
 ```
 PASS  test/main.test.ts
   Problem
@@ -40,8 +42,14 @@ Tests:       2 passed, 2 total
 Snapshots:   0 total
 Time:        3.478 s
 Ran all test suites.
-  ```          
+```       
 
+### Running Coverage
+```
+npm run coverage
+```
+
+#### Coverage output
 File                       | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s                                                                     
 ---------------------------|---------|----------|---------|---------|---------------------------------------------------------------------------------------
 All files                  |   89.39 |    83.45 |   92.21 |   90.06 |                                                                                       
@@ -54,4 +62,20 @@ All files                  |   89.39 |    83.45 |   92.21 |   90.06 |
   seed-data.ts             |     100 |      100 |     100 |     100 |     
 
 
-                                 
+### Running application
+
+#### To Install node modules
+```
+npm install
+```
+
+#### to start the application
+```
+npm start <absolute_path_to_input_file> 
+
+# e.g. test/inputs/test-positive.txt
+```
+
+#### Output
+
+Output file will be available at the root of the project as "output.txt", also logs the output for testing

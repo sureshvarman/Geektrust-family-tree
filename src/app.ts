@@ -1,14 +1,9 @@
-import FamilyTree from "./src/family";
-import SeedData from "./src/seed-data";
-import DB from "./src/db";
+import FamilyTree from "./family";
+import SeedData from "./seed-data";
+import DB from "./db";
 
-import {
-	Tgender,
-	actions,
-	relations,
-	messages,
-	erroCode,
-} from "./src/family-utils";
+import { Tgender, actions, relations } from "./family-utils";
+import { readFileSync } from "fs";
 
 /**
  * @class App application logics are handled in here.
@@ -162,26 +157,18 @@ export default class App {
 		}
 	}
 
-	prompt() {
-		process.stdin.resume();
-		process.stdin.setEncoding("utf-8");
-		var inputs = "";
+	/**
+	 * Function to prompt for user input
+	 */
+	parseInputFile(fileLocation: string) {
+		let inputs = readFileSync(fileLocation, "utf-8")
+			.split("\n")
+			.filter((data) => {
+				return !data.match(/\/\//) && data; // ignoring comments
+			});
 
-		process.stdin.on("data", (input) => {
-			inputs += input;
-		});
-
-		process.stdin.on("end", () => {
-			for (let input of inputs.split("\n")) {
-				if (input) {
-					this.query(input);
-				}
-			}
-		});
+		for (let input of inputs) {
+			this.query(input);
+		}
 	}
 }
-
-//const application = new App(process.argv[3] || null);
-
-// application.showHelpers();
-//application.prompt();

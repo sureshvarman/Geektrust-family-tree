@@ -1,5 +1,5 @@
 import { readFileSync } from "fs";
-import App from "../app";
+import App from "../src/app";
 
 import { messages, erroCode } from "../src/family-utils";
 
