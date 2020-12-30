@@ -3,9 +3,14 @@ import {
 	Tgender,
 	IDB,
 	IFamilyMember,
-	Tparents,
+	erroCode,
 } from "./family-utils";
 
+/**
+ * Class represents the family member attributes and relations
+ * abstracted to the level of member, where the getter and setters are available
+ * @class FamilyMember
+ */
 class FamilyMember implements IFamilyMember {
 	name: string;
 	gender: Tgender;
@@ -14,6 +19,11 @@ class FamilyMember implements IFamilyMember {
 	spouse: IFamilyMember = null;
 	children: Array<IFamilyMember> = [];
 
+	/**
+	 * @constructor
+	 * @param {string} name
+	 * @param {Tgender} gender
+	 */
 	constructor(name: string, gender: Tgender) {
 		this.name = name;
 		this.gender = gender;
@@ -76,6 +86,28 @@ class FamilyMember implements IFamilyMember {
 	}
 
 	/**
+	 * function to get the sibilings
+	 * @param {Tgender} gender gender to get
+	 * @returns {Array<IFamilyTree>}
+	 */
+	getSiblings(gender?: Tgender) {
+		const mother = this.getMother();
+
+		if (!mother) {
+			return [];
+		}
+
+		let children = mother.getChildren();
+		children = children.filter((child) => child.getName() !== this.getName());
+
+		if (gender) {
+			children = children.filter((child) => child.getGender() == gender);
+		}
+
+		return children;
+	}
+
+	/**
 	 * Function to set the spouse
 	 * @param spouse
 	 */
@@ -122,22 +154,22 @@ class FamilyMember implements IFamilyMember {
 	}
 }
 
+/**
+ * class maintains familyMember in a store and validate them for a retrieve or addition
+ * an another level decopuling between the familyMember and the concrete calling class
+ *
+ * @class FamilyTree
+ */
 export default class FamilyTree implements IFamilyTree {
 	db: IDB;
 	root: IFamilyMember;
 
+	/**
+	 * @constructor
+	 * @param {IDB} db database interface to store and retrieve the data
+	 */
 	constructor(db: IDB) {
 		this.db = db;
-		// get the seed data and decorate the tree
-	}
-
-	/**
-	 * function to add memeber to the tree structure
-	 * @param name
-	 * @param gender
-	 */
-	addMember(name: string, gender: Tgender) {
-		this.db.set(name, new FamilyMember(name, gender));
 	}
 
 	/**
@@ -152,6 +184,7 @@ export default class FamilyTree implements IFamilyTree {
 		fatherMember: IFamilyMember
 	) {
 		if (!childMember || !motherMember || !fatherMember) {
+			console.log(childMember, motherMember, fatherMember);
 			throw new Error(
 				"One of the member is not yet into the family tree to build an relation..."
 			);
@@ -162,6 +195,28 @@ export default class FamilyTree implements IFamilyTree {
 
 		motherMember.addChild(childMember);
 		fatherMember.addChild(childMember);
+	}
+
+	/**
+	 * Function to get the children
+	 * @param {IFamilyMember} member
+	 * @param {Tgender} gender
+	 */
+	protected getChildren(member: IFamilyMember, gender: Tgender) {
+		let children = member.getChildren();
+
+		children = children.filter((child) => child.getGender() == gender);
+
+		return children;
+	}
+
+	/**
+	 * function to add memeber to the tree structure
+	 * @param name
+	 * @param gender
+	 */
+	addMember(name: string, gender: Tgender) {
+		this.db.set(name, new FamilyMember(name, gender));
 	}
 
 	/**
@@ -196,8 +251,10 @@ export default class FamilyTree implements IFamilyTree {
 	addChild(name: string, gender: Tgender, mother: string) {
 		const motherMember = this.db.get(mother);
 
-		if (!motherMember || motherMember.getGender() !== Tgender.FEMALE) {
-			throw new Error("mother not exists or not an mother...");
+		if (!motherMember) {
+			throw new Error(erroCode.PERSON_NOT_FOUND);
+		} else if (motherMember.getGender() !== Tgender.FEMALE) {
+			throw new Error(erroCode.CHILD_ADDITION_FAILED);
 		}
 
 		const fatherMember = motherMember.getSpouse();
@@ -210,17 +267,6 @@ export default class FamilyTree implements IFamilyTree {
 	}
 
 	/**
-	 * Function to get the children
-	 * @param {IFamilyMember} member
-	 * @param {Tgender} gender
-	 */
-	getChildren(member: IFamilyMember, gender: Tgender) {
-		const children = member.getChildren();
-
-		return children.filter((child) => child.getGender() == gender);
-	}
-
-	/**
 	 * Function to get sons
 	 * @param {string} name
 	 *
@@ -230,7 +276,7 @@ export default class FamilyTree implements IFamilyTree {
 		const member = this.db.get(name);
 
 		if (!member) {
-			throw new Error("Member not found");
+			throw new Error(erroCode.PERSON_NOT_FOUND);
 		}
 
 		return this.getChildren(member, Tgender.MALE);
@@ -246,7 +292,7 @@ export default class FamilyTree implements IFamilyTree {
 		const member = this.db.get(name);
 
 		if (!member) {
-			throw new Error("Member not found");
+			throw new Error(erroCode.PERSON_NOT_FOUND);
 		}
 
 		return this.getChildren(member, Tgender.FEMALE);
@@ -262,7 +308,7 @@ export default class FamilyTree implements IFamilyTree {
 		const member = this.db.get(name);
 
 		if (!member) {
-			throw new Error("Member not found");
+			throw new Error(erroCode.PERSON_NOT_FOUND);
 		}
 
 		return member.getMother();
@@ -278,7 +324,7 @@ export default class FamilyTree implements IFamilyTree {
 		const member = this.db.get(name);
 
 		if (!member) {
-			throw new Error("Member not found");
+			throw new Error(erroCode.PERSON_NOT_FOUND);
 		}
 
 		return member.getFather();
@@ -294,9 +340,59 @@ export default class FamilyTree implements IFamilyTree {
 		const member = this.db.get(name);
 
 		if (!member) {
-			throw new Error("Member not found");
+			throw new Error(erroCode.PERSON_NOT_FOUND);
 		}
 
 		return member.getSpouse();
+	}
+
+	/**
+	 * Function to get sibilings
+	 * @param {string} name
+	 *
+	 * @return {IFamilyMember}
+	 */
+	getSiblings(name: string, gender?: Tgender) {
+		const member = this.db.get(name);
+
+		if (!member) {
+			throw new Error(erroCode.PERSON_NOT_FOUND);
+		}
+
+		let siblings = member.getSiblings(gender);
+
+		return siblings;
+	}
+
+	/**
+	 * Function to get the member
+	 * @param name
+	 *
+	 * @returns {IFamilyMember}
+	 */
+	getMember(name: string) {
+		const member = this.db.get(name);
+
+		if (member) {
+			return member;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Function to set root female
+	 * @param name
+	 */
+	setRoot(name: string) {
+		const member = this.db.get(name);
+
+		if (member && member.getGender() == Tgender.FEMALE) {
+			this.root = member;
+
+			return;
+		}
+
+		throw new Error(erroCode.PERSON_ADDITION_FAILED);
 	}
 }

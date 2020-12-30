@@ -1,0 +1,41 @@
+{
+  "name": "geektrust-family-tree",
+  "version": "1.0.0",
+  "description": "Geektrust family tree challenge in typescript",
+  "dependencies": {
+    "babel-jest": "^26.6.3",
+    "fs": "^0.0.1-security"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.19",
+    "chai": "^4.2.0",
+    "jest": "^26.6.3",
+    "mocha": "^8.2.1",
+    "nyc": "^15.1.0",
+    "ts-jest": "^26.4.4",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.3"
+  },
+  "scripts": {
+    "build": "",
+    "test": "jest",
+    "coverage": "jest --coverage",
+    "start": "npm run build && node dist",
+    "dev": "ts-node app.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sureshvarman/Geektrust-family-tree.git"
+  },
+  "keywords": [
+    "Geektrust",
+    "family",
+    "tree"
+  ],
+  "author": "Suresh Varman",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sureshvarman/Geektrust-family-tree/issues"
+  },
+  "homepage": "https://github.com/sureshvarman/Geektrust-family-tree#readme"
+}

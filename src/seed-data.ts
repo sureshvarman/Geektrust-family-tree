@@ -1,25 +1,41 @@
 import { readFileSync } from "fs";
 import { IFamilyTree, Tgender } from "./family-utils";
 
+/**
+ * @class SeedData
+ * Class to insert seed data to form an tree
+ */
 export default class SeedData {
 	familyTree: IFamilyTree;
+	defaultFileLocation: string = process.cwd() + "/seed-data.txt";
 
+	/**
+	 * @constructor
+	 * @param {IFamilyTree} familyTree
+	 */
 	constructor(familyTree: IFamilyTree) {
 		this.familyTree = familyTree;
 	}
 
-	protected readSeedData(): Array<string> {
-		let seedData = readFileSync(
-			process.cwd() + "/src/seed-data.txt",
-			"utf8"
-		).split("\n");
+	/**
+	 * Private function to read the seed data
+	 * @param {string} fileLocation location of the file
+	 */
+	protected readSeedData(fileLocation?: string): Array<string> {
+		let seedData = readFileSync(fileLocation, "utf8").split("\n");
 
 		return seedData.filter((data) => {
 			return !data.match(/\/\//) && data;
 		});
 	}
 
-	protected parseMembersAndGetMother(member1, member2, mother) {
+	/**
+	 * private Function to add members to the tree and decide the mother and communicates back
+	 * @param {string} member1
+	 * @param {string} member2
+	 * @param {string} mother
+	 */
+	protected addMembersGetMother(member1, member2, mother) {
 		let [member1Name, member1Gender] = member1.split(":");
 		let [member2Name, member2Gender] = member2 ? member2.split(":") : [];
 
@@ -41,20 +57,39 @@ export default class SeedData {
 			this.familyTree.addChild(member1Name, member1Gender, mother);
 		}
 
-		if (member1Gender == "female") {
-			return member1Name;
-		} else if (member2Gender == "female") {
-			return member2Name;
+		return this.getMother(member1Name, member2Name);
+	}
+
+	/**
+	 * Private function to decide on the mother
+	 * @param {string} member1
+	 * @param {string} member2
+	 */
+	protected getMother(member1, member2) {
+		if (
+			this.familyTree.getMember(member1) &&
+			this.familyTree.getMember(member1).getGender() == Tgender.FEMALE
+		) {
+			return member1;
+		} else if (
+			this.familyTree.getMember(member2) &&
+			this.familyTree.getMember(member2).getGender() == Tgender.FEMALE
+		) {
+			return member2;
 		}
 
 		return null;
 	}
 
-	getMother(member1, member2) {}
-
-	seed() {
+	/**
+	 * Function to start seeding the data
+	 * @param {string} newFileLocation location of the file
+	 */
+	seed(newFileLocation?: string) {
 		const tabSize = 4;
-		const seedData = this.readSeedData();
+		const seedData = this.readSeedData(
+			newFileLocation || this.defaultFileLocation
+		);
 		let mothers = [];
 
 		for (let data of seedData) {
@@ -62,16 +97,15 @@ export default class SeedData {
 			data = data.slice(startAt, data.length);
 
 			const mother = mothers[startAt / tabSize - 1];
+
 			let [member1, member2] = data.split("-");
-			const motherInMember = this.parseMembersAndGetMother(
-				member1,
-				member2,
-				mother
-			);
+			const motherInMember = this.addMembersGetMother(member1, member2, mother);
 
 			if (motherInMember) {
 				mothers[startAt / tabSize] = motherInMember;
 			}
 		}
+
+		this.familyTree.setRoot(mothers[0]);
 	}
 }

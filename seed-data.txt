@@ -8,7 +8,7 @@
 // 		<tab><child#2>-<theirspouse>
 
 King Shan:male-Queen Anga:female
-    chit:male-Amba:female
+    Chit:male-Amba:female
         Dritha:female-Jaya:male
             Yodhan:male
         Tritha:female
@@ -25,5 +25,6 @@ King Shan:male-Queen Anga:female
         Asva:male-Satvy:female
             Vasa:male
         Vyas:male-Krpi:female
-            Kriya:male-Krithi:female
+            Kriya:male
+            Krithi:female
         Atya:female

@@ -1,0 +1,24 @@
+ADD_CHILD Dritha Dritha_child female #CHILD_ADDITION_SUCCEEDED
+GET_RELATIONSHIP Dritha_child father #Jaya
+
+GET_RELATIONSHIP Atya Sister-In-Law #Satvy Krpi
+GET_RELATIONSHIP Arit Brother-In-Law #Ahit
+GET_RELATIONSHIP Krpi Sister-In-Law #Atya
+GET_RELATIONSHIP Jaya Brother-In-Law #Vritha
+
+GET_RELATIONSHIP Vritha Paternal-Uncle #Ish Vich Aras
+GET_RELATIONSHIP Vyas Maternal-Uncle #Chit Ish Vich Aras
+
+GET_RELATIONSHIP Dritha Paternal-Aunt #Satya
+GET_RELATIONSHIP Dritha_child Maternal-Aunt #Tritha
+
+GET_RELATIONSHIP Dritha_child Siblings #Yodhan
+GET_RELATIONSHIP Ish Siblings #Chit Vich Aras Satya
+
+GET_RELATIONSHIP Jnki Son #Laki
+
+GET_RELATIONSHIP Krpi Daughter #Krithi
+
+ADD_CHILD Chitra Som male #CHILD_ADDITION_SUCCEEDED
+
+
