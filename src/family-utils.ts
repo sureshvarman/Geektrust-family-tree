@@ -6,7 +6,7 @@ export type Tparents = {
 export interface IFamilyTree {
 	addMember(name: string, gender: Tgender);
 	doWedding(name1: string, name2: string);
-	addChild(name: string, gender: Tgender, mother: string);
+	addChild(name: string, gender: Tgender, mother: string): string;
 	getMember(name: string): IFamilyMember;
 	setRoot(name: string);
 

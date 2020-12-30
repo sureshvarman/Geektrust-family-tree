@@ -37,15 +37,11 @@ export default class App {
 					child = addChildParams[1],
 					mother = addChildParams[0]; // assuming mother name is only single name
 
-				this.familyTree.addChild(
+				return this.familyTree.addChild(
 					child,
 					gender == Tgender.MALE ? Tgender.MALE : Tgender.FEMALE,
 					mother
 				);
-
-				console.log(messages.CHILD_ADDITION_SUCCEEDED);
-
-				break;
 
 			case actions.GET_RELATIONSHIP:
 				const relationParams = queryParams.split(/\t|\s/);
@@ -54,151 +50,79 @@ export default class App {
 
 				switch (relationship.toLowerCase()) {
 					case relations.SPOUSE:
-						console.log(this.familyTree.getSpouse(member).getName());
-						break;
+						return this.familyTree.getSpouse(member).getName();
 
 					case relations.DAUGHTER:
-						console.log(
-							this.familyTree
-								.getDaughters(member)
-								.map((data) => data.getName())
-								.join(" ")
-						);
-						break;
+						return this.familyTree
+							.getDaughters(member)
+							.map((data) => data.getName())
+							.join(" ");
 
 					case relations.SON:
-						console.log(
-							this.familyTree
-								.getSons(member)
-								.map((data) => data.getName())
-								.join(" ")
-						);
-						break;
+						return this.familyTree
+							.getSons(member)
+							.map((data) => data.getName())
+							.join(" ");
 
 					case relations.SIBLINGS:
-						console.log(
-							this.familyTree
-								.getSiblings(member)
-								.map((data) => data.getName())
-								.join(" ")
-						);
-						break;
+						return this.familyTree
+							.getSiblings(member)
+							.map((data) => data.getName())
+							.join(" ");
 
 					case relations.BROTHER:
-						console.log(
-							this.familyTree
-								.getSiblings(member, Tgender.MALE)
-								.map((data) => data.getName())
-								.join(" ")
-						);
-						break;
+						return this.familyTree
+							.getSiblings(member, Tgender.MALE)
+							.map((data) => data.getName())
+							.join(" ");
 
 					case relations.SISTER_IN_LAW:
-						let sisterInLaws = [];
-						let wivesOfSiblings = this.familyTree
-							.getSiblings(member, Tgender.MALE)
-							.filter((brother) => brother.getSpouse())
-							.map((brother) => brother.getSpouse().getName());
-
-						sisterInLaws = sisterInLaws.concat(wivesOfSiblings);
-
-						let spouseSL = this.familyTree.getSpouse(member);
-						if (spouseSL) {
-							sisterInLaws = sisterInLaws.concat(
-								spouseSL
-									.getSiblings(Tgender.FEMALE)
-									.map((sister) => sister.getName())
-							);
-						}
-
-						if (sisterInLaws.length < 1) {
-							throw new Error(erroCode.NONE);
-						}
-
-						console.log(sisterInLaws.join(" "));
-						break;
+						return this.familyTree
+							.getSisterInLaws(member)
+							.map((data) => data.getName())
+							.join(" ");
 
 					case relations.BROTHER_IN_LAW:
-						let brotherInLaws = [];
-						let husbandOfSibilings = this.familyTree
-							.getSiblings(member, Tgender.FEMALE)
-							.filter((sister) => sister.getSpouse())
-							.map((sister) => sister.getSpouse().getName());
-
-						brotherInLaws = brotherInLaws.concat(husbandOfSibilings);
-
-						let spouseBL = this.familyTree.getSpouse(member);
-						if (spouseBL) {
-							brotherInLaws = brotherInLaws.concat(
-								spouseBL
-									.getSiblings(Tgender.MALE)
-									.map((brother) => brother.getName())
-							);
-						}
-
-						if (brotherInLaws.length < 1) {
-							throw new Error(erroCode.NONE);
-						}
-
-						console.log(brotherInLaws.join(" "));
-						break;
+						return this.familyTree
+							.getBrotherInLaws(member)
+							.map((data) => data.getName())
+							.join(" ");
 
 					case relations.SISTER:
-						console.log(
-							this.familyTree
-								.getSiblings(member, Tgender.FEMALE)
-								.map((data) => data.getName())
-								.join(" ")
-						);
-						break;
+						return this.familyTree
+							.getSiblings(member, Tgender.FEMALE)
+							.map((data) => data.getName())
+							.join(" ");
 
 					case relations.MATERNAL_AUNT:
-						console.log(
-							this.familyTree
-								.getMother(member)
-								.getSiblings(Tgender.FEMALE)
-								.map((data) => data.getName())
-								.join(" ")
-						);
-						break;
+						return this.familyTree
+							.getMaternalAunts(member)
+							.map((data) => data.getName())
+							.join(" ");
 
 					case relations.PATERNAL_AUNT:
-						console.log(
-							this.familyTree
-								.getFather(member)
-								.getSiblings(Tgender.FEMALE)
-								.map((data) => data.getName())
-								.join(" ")
-						);
-						break;
+						return this.familyTree
+							.getPaternalAunts(member)
+							.map((data) => data.getName())
+							.join(" ");
 
 					case relations.MATERNAL_UNCLE:
-						console.log(
-							this.familyTree
-								.getMother(member)
-								.getSiblings(Tgender.MALE)
-								.map((data) => data.getName())
-								.join(" ")
-						);
-						break;
+						return this.familyTree
+							.getMaternalUncles(member)
+							.map((data) => data.getName())
+							.join(" ");
 
 					case relations.PATERNAL_UNCLE:
-						console.log(
-							this.familyTree
-								.getFather(member)
-								.getSiblings(Tgender.MALE)
-								.map((data) => data.getName())
-								.join(" ")
-						);
-						break;
+						return this.familyTree
+							.getPaternalUncles(member)
+							.map((data) => data.getName())
+							.join(" ");
 
 					case relations.FATHER:
-						console.log(this.familyTree.getFather(member).getName());
-						break;
+						return this.familyTree.getFather(member).getName();
 
 					case relations.MOTHER:
-						console.log(this.familyTree.getFather(member).getName());
-						break;
+						return this.familyTree.getMother(member).getName();
 				}
 				break;
 		}
@@ -231,7 +155,8 @@ export default class App {
 		const params = input.split(`${query} `)[1];
 
 		try {
-			this.doQuery(query[0], params);
+			const result = this.doQuery(query[0], params);
+			console.log(result);
 		} catch (e) {
 			console.log(e.message);
 		}

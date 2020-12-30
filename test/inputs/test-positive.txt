@@ -21,4 +21,11 @@ GET_RELATIONSHIP Krpi Daughter #Krithi
 
 ADD_CHILD Chitra Som male #CHILD_ADDITION_SUCCEEDED
 
+GET_RELATIONSHIP Jaya Spouse #Dritha
+
+GET_RELATIONSHIP Jnki Brother #Ahit Som
+
+GET_RELATIONSHIP Asva Sister #Atya
+
+GET_RELATIONSHIP Chika Mother #Lika
 

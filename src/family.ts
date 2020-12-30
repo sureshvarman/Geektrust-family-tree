@@ -4,6 +4,7 @@ import {
 	IDB,
 	IFamilyMember,
 	erroCode,
+	messages,
 } from "./family-utils";
 
 /**
@@ -184,17 +185,18 @@ export default class FamilyTree implements IFamilyTree {
 		fatherMember: IFamilyMember
 	) {
 		if (!childMember || !motherMember || !fatherMember) {
-			console.log(childMember, motherMember, fatherMember);
-			throw new Error(
-				"One of the member is not yet into the family tree to build an relation..."
-			);
+			throw new Error(erroCode.PERSON_NOT_FOUND);
 		}
 
-		childMember.setMother(motherMember);
-		childMember.setFather(fatherMember);
+		try {
+			childMember.setMother(motherMember);
+			childMember.setFather(fatherMember);
 
-		motherMember.addChild(childMember);
-		fatherMember.addChild(childMember);
+			motherMember.addChild(childMember);
+			fatherMember.addChild(childMember);
+		} catch (e) {
+			throw new Error(erroCode.CHILD_ADDITION_FAILED);
+		}
 	}
 
 	/**
@@ -248,12 +250,14 @@ export default class FamilyTree implements IFamilyTree {
 	 * @param gender
 	 * @param mother
 	 */
-	addChild(name: string, gender: Tgender, mother: string) {
+	addChild(name: string, gender: Tgender, mother: string): string {
 		const motherMember = this.db.get(mother);
 
 		if (!motherMember) {
 			throw new Error(erroCode.PERSON_NOT_FOUND);
 		} else if (motherMember.getGender() !== Tgender.FEMALE) {
+			throw new Error(erroCode.CHILD_ADDITION_FAILED);
+		} else if (!motherMember.getSpouse()) {
 			throw new Error(erroCode.CHILD_ADDITION_FAILED);
 		}
 
@@ -264,6 +268,8 @@ export default class FamilyTree implements IFamilyTree {
 		}
 
 		this.mapParents(this.db.get(name), motherMember, fatherMember);
+
+		return messages.CHILD_ADDITION_SUCCEEDED;
 	}
 
 	/**
@@ -279,7 +285,13 @@ export default class FamilyTree implements IFamilyTree {
 			throw new Error(erroCode.PERSON_NOT_FOUND);
 		}
 
-		return this.getChildren(member, Tgender.MALE);
+		const children = this.getChildren(member, Tgender.MALE);
+
+		if (children.length < 1) {
+			throw new Error(erroCode.NONE);
+		}
+
+		return children;
 	}
 
 	/**
@@ -295,7 +307,13 @@ export default class FamilyTree implements IFamilyTree {
 			throw new Error(erroCode.PERSON_NOT_FOUND);
 		}
 
-		return this.getChildren(member, Tgender.FEMALE);
+		const children = this.getChildren(member, Tgender.FEMALE);
+
+		if (children.length < 1) {
+			throw new Error(erroCode.NONE);
+		}
+
+		return children;
 	}
 
 	/**
@@ -343,7 +361,13 @@ export default class FamilyTree implements IFamilyTree {
 			throw new Error(erroCode.PERSON_NOT_FOUND);
 		}
 
-		return member.getSpouse();
+		const spouse = member.getSpouse();
+
+		if (!spouse) {
+			throw new Error(erroCode.NONE);
+		}
+
+		return spouse;
 	}
 
 	/**
@@ -361,6 +385,10 @@ export default class FamilyTree implements IFamilyTree {
 
 		let siblings = member.getSiblings(gender);
 
+		if (siblings.length < 1) {
+			throw new Error(erroCode.NONE);
+		}
+
 		return siblings;
 	}
 
@@ -373,11 +401,161 @@ export default class FamilyTree implements IFamilyTree {
 	getMember(name: string) {
 		const member = this.db.get(name);
 
-		if (member) {
-			return member;
+		return member;
+	}
+
+	/**
+	 * Function to get the paternal uncles
+	 * @param {string} name
+	 *
+	 * @returns {Array<IFamilyMember>}
+	 */
+	getPaternalUncles(name: string): Array<IFamilyMember> {
+		const member = this.getMember(name);
+
+		if (!member) {
+			throw new Error(erroCode.PERSON_NOT_FOUND);
 		}
 
-		return null;
+		const paternalUncles = member.getFather().getSiblings(Tgender.MALE);
+
+		if (paternalUncles.length < 1) {
+			throw new Error(erroCode.NONE);
+		}
+
+		return paternalUncles;
+	}
+
+	/**
+	 * Function to get the maternal uncles
+	 * @param {string} name
+	 *
+	 * @returns {Array<IFamilyMember>}
+	 */
+	getMaternalUncles(name: string): Array<IFamilyMember> {
+		const member = this.getMember(name);
+
+		if (!member) {
+			throw new Error(erroCode.PERSON_NOT_FOUND);
+		}
+
+		const maternalUncles = member.getMother().getSiblings(Tgender.MALE);
+
+		if (maternalUncles.length < 1) {
+			throw new Error(erroCode.NONE);
+		}
+
+		return maternalUncles;
+	}
+
+	/**
+	 * Function to get the paternal aunt
+	 * @param {string} name
+	 *
+	 * @returns {Array<IFamilyMember>}
+	 */
+	getPaternalAunts(name: string): Array<IFamilyMember> {
+		const member = this.getMember(name);
+
+		if (!member) {
+			throw new Error(erroCode.PERSON_NOT_FOUND);
+		}
+
+		const paternalAunts = member.getFather().getSiblings(Tgender.FEMALE);
+
+		if (paternalAunts.length < 1) {
+			throw new Error(erroCode.NONE);
+		}
+
+		return paternalAunts;
+	}
+
+	/**
+	 * Function to get the maternal aunt
+	 * @param {string} name
+	 *
+	 * @returns {Array<IFamilyMember>}
+	 */
+	getMaternalAunts(name: string): Array<IFamilyMember> {
+		const member = this.getMember(name);
+
+		if (!member) {
+			throw new Error(erroCode.PERSON_NOT_FOUND);
+		}
+
+		const paternalAunts = member.getMother().getSiblings(Tgender.FEMALE);
+
+		if (paternalAunts.length < 1) {
+			throw new Error(erroCode.NONE);
+		}
+
+		return paternalAunts;
+	}
+
+	/**
+	 * Function to get brother in laws
+	 * @param name
+	 *
+	 * @return {Array<IFamilyMember>}
+	 */
+	getBrotherInLaws(name: string): Array<IFamilyMember> {
+		let brotherInLaws = [];
+		const member = this.getMember(name);
+
+		if (!member) {
+			throw new Error(erroCode.PERSON_NOT_FOUND);
+		}
+
+		let husbandOfSibilings = member
+			.getSiblings(Tgender.FEMALE)
+			.filter((sister) => sister.getSpouse())
+			.map((sister) => sister.getSpouse());
+
+		brotherInLaws = brotherInLaws.concat(husbandOfSibilings);
+
+		let spouse = member.getSpouse();
+		if (spouse) {
+			brotherInLaws = brotherInLaws.concat(spouse.getSiblings(Tgender.MALE));
+		}
+
+		if (brotherInLaws.length < 1) {
+			throw new Error(erroCode.NONE);
+		}
+
+		return brotherInLaws;
+	}
+
+	/**
+	 * Function to get sister in laws
+	 * @param name
+	 *
+	 * @return {Array<IFamilyMember>}
+	 */
+	getSisterInLaws(name: string): Array<IFamilyMember> {
+		let sisterInLaws = [];
+		const member = this.getMember(name);
+
+		if (!member) {
+			throw new Error(erroCode.PERSON_NOT_FOUND);
+		}
+
+		let wivesOfSiblings = member
+			.getSiblings(Tgender.MALE)
+			.filter((brother) => brother.getSpouse())
+			.map((brother) => brother.getSpouse());
+
+		sisterInLaws = sisterInLaws.concat(wivesOfSiblings);
+
+		let spouse = member.getSpouse();
+		if (spouse) {
+			sisterInLaws = sisterInLaws.concat(spouse.getSiblings(Tgender.FEMALE));
+		}
+
+		if (sisterInLaws.length < 1) {
+			throw new Error(erroCode.NONE);
+		}
+
+		return sisterInLaws;
 	}
 
 	/**
