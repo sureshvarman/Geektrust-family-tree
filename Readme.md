@@ -4,7 +4,7 @@
 * Names are unique in the entire family, treating name as an id.
 * Assuming no re-marriages are there
 * Assuming no marriages with in the family
-* Assuming while adding child the mother name and child name will be only single firstname
+* Assuming while adding child the mother name and child name will be only firstname
 
 
 ### Seed Data Format
