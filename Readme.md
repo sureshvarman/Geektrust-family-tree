@@ -1,10 +1,28 @@
-## Meet The Family
+## Geektrust challenge #1 
+### Meet The Family
+
+`Geektrust` challenge on [meet the family](https://www.geektrust.in/coding-problem/backend/family)
 
 ### Rules or Assumptions
 * Names are unique in the entire family, treating name as an id.
 * Assuming no re-marriages are there
 * Assuming no marriages with in the family
 * Assuming while adding child the mother name and child name will be only firstname
+* Assuming no third gender
+
+
+### Class Structure
+
+`IFamilyMember` - `Interface` to declare the functions to support multi/custom family member logic.
+`FamilyMember` - `POJO class` to define properties and actions (functions) for and family member attribute and few more supporting functions.
+
+`IFamilyTree` - `Interface` to declare the functions to support multi/custom family tree logic.
+`FamilyTree` - `Concrete class` to define multiple members and supporting functions and also persist the data in entire cycle, acts as a `decorator`
+
+`IDB` - `Interface` to declare the functions to support multi/custom database logics
+`DB` - `Concrete class` to store and retrieve data acts as a `proxy` for database 
+
+`App` - `Concrete client class` to seperate the `FamilyTree` and the application requirement
 
 
 ### Seed Data Format

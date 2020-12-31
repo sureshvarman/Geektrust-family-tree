@@ -41,13 +41,13 @@ export default class SeedData {
 
 		this.familyTree.addMember(
 			member1Name,
-			member1Gender == "male" ? Tgender.MALE : Tgender.FEMALE
+			member1Gender == Tgender.MALE ? Tgender.MALE : Tgender.FEMALE
 		);
 
 		if (member2Name) {
 			this.familyTree.addMember(
 				member2Name,
-				member2Gender == "male" ? Tgender.MALE : Tgender.FEMALE
+				member2Gender == Tgender.MALE ? Tgender.MALE : Tgender.FEMALE
 			);
 
 			this.familyTree.doWedding(member1Name, member2Name);

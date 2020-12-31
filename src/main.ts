@@ -1,6 +1,7 @@
 /**
  * King shah family tree assignment,
- * This file is just an entry point, refer the internal class structures for more details
+ * This file is just an entry point,
+ * refer the internal class structures for more details
  */
 import App from "./app";
 import { writeFileSync } from "fs";

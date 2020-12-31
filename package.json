@@ -21,8 +21,8 @@
     "test": "jest",
     "build": "tsc && cp seed-data.txt dist/seed-data.txt",
     "coverage": "jest --coverage",
-    "start": "npm run build && node dist/src/geektrust",
-    "dev": "ts-node src/app.ts"
+    "start": "npm run build && node dist/src/main",
+    "dev": "ts-node src/main.ts"
   },
   "repository": {
     "type": "git",

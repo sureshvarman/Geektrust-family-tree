@@ -19,7 +19,8 @@ King Shan:male-Queen Anga:female
         Chika:female
     Aras:male-Chitra:female
         Jnki:female-Arit:male
-            Laki:male-Lavnya:female
+            Laki:male
+            Lavnya:female
         Ahit:male
     Satya:female-Vyan:male
         Asva:male-Satvy:female

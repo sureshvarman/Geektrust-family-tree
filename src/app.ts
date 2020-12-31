@@ -6,7 +6,7 @@ import { Tgender, actions, relations } from "./family-utils";
 import { readFileSync } from "fs";
 
 /**
- * @class App application logics are handled in here.
+ * @class App application class, where the application related logics are performed
  */
 export default class App {
 	familyTree: FamilyTree = new FamilyTree(new DB());

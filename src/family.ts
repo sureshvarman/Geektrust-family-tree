@@ -13,12 +13,12 @@ import {
  * @class FamilyMember
  */
 class FamilyMember implements IFamilyMember {
-	name: string;
-	gender: Tgender;
-	mother: IFamilyMember = null;
-	father: IFamilyMember = null;
-	spouse: IFamilyMember = null;
-	children: Array<IFamilyMember> = [];
+	protected name: string;
+	protected gender: Tgender;
+	protected mother: IFamilyMember = null;
+	protected father: IFamilyMember = null;
+	protected spouse: IFamilyMember = null;
+	protected children: Array<IFamilyMember> = [];
 
 	/**
 	 * @constructor
