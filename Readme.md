@@ -13,6 +13,8 @@
 
 ### Class Structure
 
+![class_diagram.png](https://github.com/sureshvarman/Geektrust-family-tree/blob/master/class_diagram.png?raw=true)
+
 `IFamilyMember` - `Interface` to declare the functions to support multi/custom family member logic.
 `FamilyMember` - `POJO class` to define properties and actions (functions) for and family member attribute and few more supporting functions.
 
