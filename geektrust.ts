@@ -3,7 +3,7 @@
  * This file is just an entry point,
  * refer the internal class structures for more details
  */
-import App from "./app";
+import App from "./src/app";
 import { writeFileSync } from "fs";
 
 const app = new App();
