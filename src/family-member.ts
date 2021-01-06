@@ -75,7 +75,10 @@ export default class FamilyMember implements IFamilyMember {
 	 * Function to get the childrens
 	 * @returns {Array<IFamilyMember}
 	 */
-	getChildren(): Array<IFamilyMember> {
+	getChildren(gender?: Tgender): Array<IFamilyMember> {
+		if (gender) {
+			return this.children.filter((child) => child.getGender() == gender);
+		}
 		return this.children;
 	}
 

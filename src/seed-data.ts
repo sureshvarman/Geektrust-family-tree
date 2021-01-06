@@ -1,6 +1,8 @@
 import { readFileSync } from "fs";
 import { IFamilyTree, Tgender } from "./family-utils";
 
+import { SpouseRelation, MotherRelation } from "./relations";
+
 /**
  * @class SeedData
  * Class to insert seed data to form an tree
@@ -50,12 +52,15 @@ export default class SeedData {
 				member2Gender == Tgender.MALE ? Tgender.MALE : Tgender.FEMALE
 			);
 
-			this.familyTree.doWedding(member1Name, member2Name);
+			this.familyTree
+				.buildRelation(member1Name, new SpouseRelation())
+				.makeRelation(this.familyTree.getMember(member2Name));
 		}
 
 		if (mother) {
-			console.log("//////", this.familyTree.getMember(mother));
-			this.familyTree.addChild(member1Name, member1Gender, mother);
+			this.familyTree
+				.buildRelation(member1Name, new MotherRelation())
+				.makeRelation(this.familyTree.getMember(mother));
 		}
 
 		return this.getMother(member1Name, member2Name);

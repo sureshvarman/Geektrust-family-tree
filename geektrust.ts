@@ -12,12 +12,12 @@ const fileLocation = process.argv[2];
 
 let resultSet = "";
 
-// const outputLog = console.log;
-// console.log = function (result) {
-// 	outputLog(result);
-// 	resultSet += result + "\n";
-// };
+const outputLog = console.log;
+console.log = function (result) {
+	outputLog(result);
+	resultSet += result + "\n";
+};
 
-// app.parseInputFile(fileLocation);
+app.parseInputFile(fileLocation);
 
-// writeFileSync(`${process.cwd()}/output.txt`, resultSet);
+writeFileSync(`${process.cwd()}/output.txt`, resultSet);

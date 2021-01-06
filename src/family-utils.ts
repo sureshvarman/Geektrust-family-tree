@@ -4,29 +4,20 @@ export type Tparents = {
 };
 
 export interface IFamilyTree {
-	addMember(name: string, gender: Tgender);
-	doWedding(name1: string, name2: string);
-	addChild(name: string, gender: Tgender, mother: string): string;
+	addMember(name: string, gender: Tgender): IFamilyTree;
 	getMember(name: string): IFamilyMember;
-	setRoot(name: string);
-
 	isMemberExists(name: string);
 
-	getFather(name: string): IFamilyMember;
-	getMother(name: string): IFamilyMember;
+	buildRelation(member: string, relation: Irelation): Irelation;
 
-	getSpouse(name: string): IFamilyMember;
-
-	getChildren(name: string, gender?: Tgender): Array<IFamilyMember>;
-
-	getSiblings(name: string, gender?: Tgender): Array<IFamilyMember>;
+	setRoot(name: string);
 }
 
 export interface IFamilyMember {
 	getName(): String;
 	getGender(): Tgender;
 	getSpouse(): IFamilyMember;
-	getChildren(): Array<IFamilyMember>;
+	getChildren(gender?: Tgender): Array<IFamilyMember>;
 	getFather(): IFamilyMember;
 	getMother(): IFamilyMember;
 	getSiblings(gender?: Tgender): Array<IFamilyMember>;
@@ -82,8 +73,14 @@ export enum messages {
 }
 
 export interface Irelation {
-	familyTree: IFamilyTree;
-	getMembers(memberName: string): Array<IFamilyMember>;
+	member: IFamilyMember;
+
+	setMember(member: IFamilyMember): Irelation;
+	getMembers(gender?: Tgender): Array<IFamilyMember>;
+	makeRelation(
+		member: IFamilyMember,
+		relationMember?: IFamilyMember
+	): Irelation;
 }
 
 export interface IParser {

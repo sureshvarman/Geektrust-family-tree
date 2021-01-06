@@ -8,24 +8,40 @@ import {
 } from "../family-utils";
 
 export class BrotherInLawsRelation implements Irelation {
-	familyTree: IFamilyTree;
+	member: IFamilyMember;
 
-	constructor(familyTree: IFamilyTree) {
-		this.familyTree = familyTree;
+	setMember(member: IFamilyMember) {
+		this.member = member;
+
+		return this;
+	}
+	makeRelation(
+		member: IFamilyMember,
+		relationMember: IFamilyMember
+	): Irelation {
+		if (this.member.getSpouse() == relationMember) {
+			relationMember.getMother().addChild(member);
+		} else if (
+			relationMember.getGender() == Tgender.FEMALE &&
+			relationMember.getMother() == this.member.getMother()
+		) {
+			relationMember.setSpouse(member);
+		}
+
+		return this;
 	}
 
-	getMembers(memberName: string): IFamilyMember[] {
+	getMembers(): IFamilyMember[] {
 		let brotherInLaws = [];
 
-		let husbandOfSibilings = this.familyTree
-			.getMember(memberName)
+		let husbandOfSibilings = this.member
 			.getSiblings(Tgender.FEMALE)
 			.filter((sister) => sister.getSpouse())
 			.map((sister) => sister.getSpouse());
 
 		brotherInLaws = brotherInLaws.concat(husbandOfSibilings);
 
-		let spouse = this.familyTree.getMember(memberName).getSpouse();
+		let spouse = this.member.getSpouse();
 		if (spouse) {
 			brotherInLaws = brotherInLaws.concat(spouse.getSiblings(Tgender.MALE));
 		}
@@ -38,166 +54,41 @@ export class BrotherInLawsRelation implements Irelation {
 	}
 }
 
-export class BrotherRelation implements Irelation {
-	familyTree: IFamilyTree;
-
-	constructor(familyTree: IFamilyTree) {
-		this.familyTree = familyTree;
-	}
-
-	getMembers(memberName: string): IFamilyMember[] {
-		const familyMember = this.familyTree.getSiblings(memberName, Tgender.MALE);
-
-		return [].concat(familyMember);
-	}
-}
-
-export class DaughterRelation implements Irelation {
-	familyTree: IFamilyTree;
-
-	constructor(familyTree: IFamilyTree) {
-		this.familyTree = familyTree;
-	}
-
-	getMembers(memberName: string): IFamilyMember[] {
-		const familyMember = this.familyTree.getChildren(
-			memberName,
-			Tgender.FEMALE
-		);
-
-		return [].concat(familyMember);
-	}
-}
-
-export class FatherRelation implements Irelation {
-	familyTree: IFamilyTree;
-
-	constructor(familyTree: IFamilyTree) {
-		this.familyTree = familyTree;
-	}
-
-	getMembers(memberName: string): IFamilyMember[] {
-		const familyMember = this.familyTree.getFather(memberName);
-
-		return [].concat(familyMember);
-	}
-}
-
-export class MaternalAuntRelation implements Irelation {
-	familyTree: IFamilyTree;
-
-	constructor(familyTree: IFamilyTree) {
-		this.familyTree = familyTree;
-	}
-
-	getMembers(memberName: string): IFamilyMember[] {
-		const familyMember = this.familyTree
-			.getMember(memberName)
-			.getMother()
-			.getSiblings(Tgender.FEMALE);
-
-		return [].concat(familyMember);
-	}
-}
-
-export class MaternalUncleRelation implements Irelation {
-	familyTree: IFamilyTree;
-
-	constructor(familyTree: IFamilyTree) {
-		this.familyTree = familyTree;
-	}
-
-	getMembers(memberName: string): IFamilyMember[] {
-		const familyMember = this.familyTree
-			.getMember(memberName)
-			.getMother()
-			.getSiblings(Tgender.MALE);
-
-		return [].concat(familyMember);
-	}
-}
-
-export class MotherRelation implements Irelation {
-	familyTree: IFamilyTree;
-
-	constructor(familyTree: IFamilyTree) {
-		this.familyTree = familyTree;
-	}
-
-	getMembers(memberName: string): IFamilyMember[] {
-		const familyMember = this.familyTree.getMother(memberName);
-
-		return [].concat(familyMember);
-	}
-}
-
-export class PaternalAuntRelation implements Irelation {
-	familyTree: IFamilyTree;
-
-	constructor(familyTree: IFamilyTree) {
-		this.familyTree = familyTree;
-	}
-
-	getMembers(memberName: string): IFamilyMember[] {
-		const familyMember = this.familyTree
-			.getMember(memberName)
-			.getFather()
-			.getSiblings(Tgender.FEMALE);
-
-		return [].concat(familyMember);
-	}
-}
-
-export class PaternalUncleRelation implements Irelation {
-	familyTree: IFamilyTree;
-
-	constructor(familyTree: IFamilyTree) {
-		this.familyTree = familyTree;
-	}
-
-	getMembers(memberName: string): IFamilyMember[] {
-		const familyMember = this.familyTree
-			.getMember(memberName)
-			.getFather()
-			.getSiblings(Tgender.MALE);
-
-		return [].concat(familyMember);
-	}
-}
-
-export class SiblingsRelation implements Irelation {
-	familyTree: IFamilyTree;
-
-	constructor(familyTree: IFamilyTree) {
-		this.familyTree = familyTree;
-	}
-
-	getMembers(memberName: string): IFamilyMember[] {
-		const familyMember = this.familyTree.getSiblings(memberName);
-
-		return [].concat(familyMember);
-	}
-}
-
 export class SisterInLawsRelation implements Irelation {
-	familyTree: IFamilyTree;
+	member: IFamilyMember;
 
-	constructor(familyTree: IFamilyTree) {
-		this.familyTree = familyTree;
+	setMember(member: IFamilyMember) {
+		this.member = member;
+
+		return this;
+	}
+	makeRelation(
+		member: IFamilyMember,
+		relationMember: IFamilyMember
+	): Irelation {
+		if (this.member.getSpouse() == relationMember) {
+			relationMember.getMother().addChild(member);
+		} else if (
+			relationMember.getGender() == Tgender.MALE &&
+			relationMember.getMother() == this.member.getMother()
+		) {
+			relationMember.setSpouse(member);
+		}
+
+		return this;
 	}
 
-	getMembers(memberName: string): IFamilyMember[] {
+	getMembers(): IFamilyMember[] {
 		let sisterInLaws = [];
 
-		let wifeOfSibilings = this.familyTree
-			.getMember(memberName)
+		let wifeOfSibilings = this.member
 			.getSiblings(Tgender.MALE)
 			.filter((sister) => sister.getSpouse())
 			.map((sister) => sister.getSpouse());
 
 		sisterInLaws = sisterInLaws.concat(wifeOfSibilings);
 
-		let spouse = this.familyTree.getMember(memberName).getSpouse();
+		let spouse = this.member.getSpouse();
 		if (spouse) {
 			sisterInLaws = sisterInLaws.concat(spouse.getSiblings(Tgender.FEMALE));
 		}
@@ -210,46 +101,225 @@ export class SisterInLawsRelation implements Irelation {
 	}
 }
 
-export class SisterRelation implements Irelation {
-	familyTree: IFamilyTree;
+export class SiblingsRelation implements Irelation {
+	member: IFamilyMember;
 
-	constructor(familyTree: IFamilyTree) {
-		this.familyTree = familyTree;
+	setMember(member: IFamilyMember) {
+		this.member = member;
+
+		return this;
 	}
 
-	getMembers(memberName: string): IFamilyMember[] {
-		const familyMember = this.familyTree.getSiblings(
-			memberName,
-			Tgender.FEMALE
-		);
+	makeRelation(member: IFamilyMember): Irelation {
+		this.member.getMother().addChild(member);
+
+		return this;
+	}
+
+	getMembers(gender?: Tgender): IFamilyMember[] {
+		let familyMember: Array<IFamilyMember>;
+
+		if (gender) {
+			familyMember = this.member.getSiblings(gender);
+		} else {
+			familyMember = this.member.getSiblings();
+		}
 
 		return [].concat(familyMember);
 	}
 }
 
-export class SonRelation implements Irelation {
-	familyTree: IFamilyTree;
+export class ChildRelation implements Irelation {
+	member: IFamilyMember;
 
-	constructor(familyTree: IFamilyTree) {
-		this.familyTree = familyTree;
+	setMember(member: IFamilyMember) {
+		this.member = member;
+
+		return this;
 	}
 
-	getMembers(memberName: string): IFamilyMember[] {
-		const familyMember = this.familyTree.getChildren(memberName, Tgender.MALE);
+	makeRelation(member: IFamilyMember): Irelation {
+		if (
+			this.member.getGender() !== Tgender.FEMALE ||
+			!this.member.getSpouse()
+		) {
+			throw new Error(erroCode.CHILD_ADDITION_FAILED);
+		}
+
+		this.member.addChild(member);
+		this.member.getSpouse().addChild(member);
+
+		member.setMother(this.member);
+		member.setFather(this.member.getSpouse());
+
+		return this;
+	}
+
+	getMembers(gender?: Tgender): IFamilyMember[] {
+		let familyMember: Array<IFamilyMember>;
+
+		if (gender) {
+			familyMember = this.member.getChildren(gender);
+		} else {
+			familyMember = this.member.getChildren();
+		}
+
+		return [].concat(familyMember);
+	}
+}
+
+export class FatherRelation implements Irelation {
+	member: IFamilyMember;
+
+	setMember(member: IFamilyMember) {
+		this.member = member;
+
+		return this;
+	}
+
+	makeRelation(member: IFamilyMember): Irelation {
+		this.member.setFather(member);
+		this.member.setMother(member.getSpouse());
+
+		return this;
+	}
+
+	getMembers(): IFamilyMember[] {
+		const familyMember = this.member.getFather();
+
+		return [].concat(familyMember);
+	}
+}
+
+export class MaternalAuntRelation implements Irelation {
+	member: IFamilyMember;
+
+	setMember(member: IFamilyMember) {
+		this.member = member;
+
+		return this;
+	}
+
+	makeRelation(member: IFamilyMember): Irelation {
+		this.member.getMother().getMother().addChild(member);
+
+		return this;
+	}
+
+	getMembers(): IFamilyMember[] {
+		const familyMember = this.member.getMother().getSiblings(Tgender.FEMALE);
+
+		return [].concat(familyMember);
+	}
+}
+
+export class MaternalUncleRelation implements Irelation {
+	member: IFamilyMember;
+
+	setMember(member: IFamilyMember) {
+		this.member = member;
+
+		return this;
+	}
+
+	makeRelation(member: IFamilyMember): Irelation {
+		this.member.getMother().getMother().addChild(member);
+
+		return this;
+	}
+
+	getMembers(): IFamilyMember[] {
+		const familyMember = this.member.getMother().getSiblings(Tgender.MALE);
+
+		return [].concat(familyMember);
+	}
+}
+
+export class MotherRelation implements Irelation {
+	member: IFamilyMember;
+
+	setMember(member: IFamilyMember) {
+		this.member = member;
+
+		return this;
+	}
+
+	makeRelation(member: IFamilyMember): Irelation {
+		this.member.setMother(member);
+		this.member.setFather(member.getSpouse());
+
+		return this;
+	}
+
+	getMembers(): IFamilyMember[] {
+		const familyMember = this.member.getMother();
+
+		return [].concat(familyMember);
+	}
+}
+
+export class PaternalAuntRelation implements Irelation {
+	member: IFamilyMember;
+
+	setMember(member: IFamilyMember) {
+		this.member = member;
+
+		return this;
+	}
+
+	makeRelation(member: IFamilyMember): Irelation {
+		this.member.getFather().getMother().addChild(member);
+
+		return this;
+	}
+
+	getMembers(): IFamilyMember[] {
+		const familyMember = this.member.getFather().getSiblings(Tgender.FEMALE);
+
+		return [].concat(familyMember);
+	}
+}
+
+export class PaternalUncleRelation implements Irelation {
+	member: IFamilyMember;
+
+	setMember(member: IFamilyMember) {
+		this.member = member;
+
+		return this;
+	}
+
+	makeRelation(member: IFamilyMember): Irelation {
+		this.member.getFather().getMother().addChild(member);
+
+		return this;
+	}
+
+	getMembers(): IFamilyMember[] {
+		const familyMember = this.member.getFather().getSiblings(Tgender.MALE);
 
 		return [].concat(familyMember);
 	}
 }
 
 export class SpouseRelation implements Irelation {
-	familyTree: IFamilyTree;
+	member: IFamilyMember;
 
-	constructor(familyTree: IFamilyTree) {
-		this.familyTree = familyTree;
+	setMember(member: IFamilyMember) {
+		this.member = member;
+
+		return this;
 	}
 
-	getMembers(memberName: string): IFamilyMember[] {
-		const familyMember = this.familyTree.getSpouse(memberName);
+	makeRelation(member: IFamilyMember): Irelation {
+		this.member.setSpouse(member);
+		member.setSpouse(this.member);
+
+		return this;
+	}
+
+	getMembers(): IFamilyMember[] {
+		const familyMember = this.member.getSpouse();
 
 		return [].concat(familyMember);
 	}
