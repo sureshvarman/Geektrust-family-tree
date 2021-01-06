@@ -10,19 +10,14 @@ export interface IFamilyTree {
 	getMember(name: string): IFamilyMember;
 	setRoot(name: string);
 
+	getFather(name: string): IFamilyMember;
+	getMother(name: string): IFamilyMember;
+
 	getSpouse(name: string): IFamilyMember;
-	getSons(name: string): Array<IFamilyMember>;
-	getDaughters(name: string): Array<IFamilyMember>;
+
+	getChildren(name: string, gender?: Tgender): Array<IFamilyMember>;
+
 	getSiblings(name: string, gender?: Tgender): Array<IFamilyMember>;
-
-	getSisterInLaws(name: string): Array<IFamilyMember>;
-	getBrotherInLaws(name: string): Array<IFamilyMember>;
-
-	getMaternalAunts(name: string): Array<IFamilyMember>;
-	getPaternalAunts(name: string): Array<IFamilyMember>;
-
-	getMaternalUncles(name: string): Array<IFamilyMember>;
-	getPaternalUncles(name: string): Array<IFamilyMember>;
 }
 
 export interface IFamilyMember {
@@ -82,4 +77,9 @@ export enum erroCode {
 
 export enum messages {
 	CHILD_ADDITION_SUCCEEDED = "CHILD_ADDITION_SUCCEEDED",
+}
+
+export interface Irelation {
+	familyTree: IFamilyTree;
+	getMembers(memberName: string): Array<IFamilyMember>;
 }
