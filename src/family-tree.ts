@@ -38,10 +38,6 @@ export default class FamilyTree implements IFamilyTree {
 		motherMember: IFamilyMember,
 		fatherMember: IFamilyMember
 	) {
-		if (!childMember || !motherMember || !fatherMember) {
-			throw new Error(erroCode.PERSON_NOT_FOUND);
-		}
-
 		try {
 			childMember.setMother(motherMember);
 			childMember.setFather(fatherMember);
@@ -54,6 +50,22 @@ export default class FamilyTree implements IFamilyTree {
 	}
 
 	/**
+	 * Function to get the member exists or not
+	 * @param name
+	 *
+	 * @returns {Boolean}
+	 */
+	isMemberExists(name: string) {
+		const member = this.db.get(name);
+
+		if (!member) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
 	 * Function to get the member
 	 * @param name
 	 *
@@ -61,6 +73,10 @@ export default class FamilyTree implements IFamilyTree {
 	 */
 	getMember(name: string) {
 		const member = this.db.get(name);
+
+		if (!member) {
+			throw new Error(erroCode.PERSON_NOT_FOUND);
+		}
 
 		return member;
 	}
@@ -93,8 +109,8 @@ export default class FamilyTree implements IFamilyTree {
 	 * @param {String} female female member
 	 */
 	doWedding(male: string, female: string) {
-		const partner1 = this.db.get(male);
-		const partner2 = this.db.get(female);
+		const partner1 = this.getMember(male);
+		const partner2 = this.getMember(female);
 
 		if (partner1.getSpouse() || partner2.getSpouse()) {
 			throw new Error("Already married....");
@@ -117,23 +133,21 @@ export default class FamilyTree implements IFamilyTree {
 	 * @param mother
 	 */
 	addChild(name: string, gender: Tgender, mother: string): string {
-		const motherMember = this.db.get(mother);
+		const motherMember = this.getMember(mother);
 
-		if (!motherMember) {
-			throw new Error(erroCode.PERSON_NOT_FOUND);
-		} else if (motherMember.getGender() !== Tgender.FEMALE) {
+		if (motherMember.getGender() !== Tgender.FEMALE) {
 			throw new Error(erroCode.CHILD_ADDITION_FAILED);
 		} else if (!motherMember.getSpouse()) {
 			throw new Error(erroCode.CHILD_ADDITION_FAILED);
 		}
 
-		const fatherMember = motherMember.getSpouse();
-
 		if (!this.db.get(name)) {
 			this.addMember(name, gender);
 		}
 
-		this.mapParents(this.db.get(name), motherMember, fatherMember);
+		const fatherMember = motherMember.getSpouse();
+
+		this.mapParents(this.getMember(name), motherMember, fatherMember);
 
 		return messages.CHILD_ADDITION_SUCCEEDED;
 	}
@@ -145,11 +159,7 @@ export default class FamilyTree implements IFamilyTree {
 	 * @return {IFamilyMember}
 	 */
 	getMother(name: string) {
-		const member = this.db.get(name);
-
-		if (!member) {
-			throw new Error(erroCode.PERSON_NOT_FOUND);
-		}
+		const member = this.getMember(name);
 
 		return member.getMother();
 	}
@@ -161,11 +171,7 @@ export default class FamilyTree implements IFamilyTree {
 	 * @return {IFamilyMember}
 	 */
 	getFather(name: string) {
-		const member = this.db.get(name);
-
-		if (!member) {
-			throw new Error(erroCode.PERSON_NOT_FOUND);
-		}
+		const member = this.getMember(name);
 
 		return member.getFather();
 	}
@@ -177,11 +183,7 @@ export default class FamilyTree implements IFamilyTree {
 	 * @return {IFamilyMember}
 	 */
 	getSpouse(name: string) {
-		const member = this.db.get(name);
-
-		if (!member) {
-			throw new Error(erroCode.PERSON_NOT_FOUND);
-		}
+		const member = this.getMember(name);
 
 		const spouse = member.getSpouse();
 
@@ -199,11 +201,7 @@ export default class FamilyTree implements IFamilyTree {
 	 * @return {IFamilyMember}
 	 */
 	getSiblings(name: string, gender?: Tgender) {
-		const member = this.db.get(name);
-
-		if (!member) {
-			throw new Error(erroCode.PERSON_NOT_FOUND);
-		}
+		const member = this.getMember(name);
 
 		let siblings = member.getSiblings(gender);
 

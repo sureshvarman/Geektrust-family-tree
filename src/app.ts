@@ -5,6 +5,8 @@ import DB from "./db";
 import { Tgender, actions, relations } from "./family-utils";
 import { readFileSync } from "fs";
 
+import ResponseParser from "./response-parser";
+
 import {
 	BrotherInLawsRelation,
 	BrotherRelation,
@@ -62,116 +64,74 @@ export default class App {
 
 				switch (relationship.toLowerCase()) {
 					case relations.SPOUSE:
-						return new SpouseRelation(this.familyTree)
-							.getMembers(member)
-							.map((familyMember) => {
-								return familyMember.getName();
-							})
-							.join(" ");
+						return new ResponseParser(
+							new SpouseRelation(this.familyTree).getMembers(member)
+						).parse();
 
 					case relations.DAUGHTER:
-						return new DaughterRelation(this.familyTree)
-							.getMembers(member)
-							.map((familyMember) => {
-								return familyMember.getName();
-							})
-							.join(" ");
+						return new ResponseParser(
+							new DaughterRelation(this.familyTree).getMembers(member)
+						).parse();
 
 					case relations.SON:
-						return new SonRelation(this.familyTree)
-							.getMembers(member)
-							.map((familyMember) => {
-								return familyMember.getName();
-							})
-							.join(" ");
+						return new ResponseParser(
+							new SonRelation(this.familyTree).getMembers(member)
+						).parse();
 
 					case relations.SIBLINGS:
-						return new SiblingsRelation(this.familyTree)
-							.getMembers(member)
-							.map((familyMember) => {
-								return familyMember.getName();
-							})
-							.join(" ");
+						return new ResponseParser(
+							new SiblingsRelation(this.familyTree).getMembers(member)
+						).parse();
 
 					case relations.BROTHER:
-						return new BrotherRelation(this.familyTree)
-							.getMembers(member)
-							.map((familyMember) => {
-								return familyMember.getName();
-							})
-							.join(" ");
+						return new ResponseParser(
+							new BrotherRelation(this.familyTree).getMembers(member)
+						).parse();
 
 					case relations.SISTER_IN_LAW:
-						return new SisterInLawsRelation(this.familyTree)
-							.getMembers(member)
-							.map((familyMember) => {
-								return familyMember.getName();
-							})
-							.join(" ");
+						return new ResponseParser(
+							new SisterInLawsRelation(this.familyTree).getMembers(member)
+						).parse();
 
 					case relations.BROTHER_IN_LAW:
-						return new BrotherInLawsRelation(this.familyTree)
-							.getMembers(member)
-							.map((familyMember) => {
-								return familyMember.getName();
-							})
-							.join(" ");
+						return new ResponseParser(
+							new BrotherInLawsRelation(this.familyTree).getMembers(member)
+						).parse();
 
 					case relations.SISTER:
-						return new SisterRelation(this.familyTree)
-							.getMembers(member)
-							.map((familyMember) => {
-								return familyMember.getName();
-							})
-							.join(" ");
+						return new ResponseParser(
+							new SisterRelation(this.familyTree).getMembers(member)
+						).parse();
 
 					case relations.MATERNAL_AUNT:
-						return new MaternalAuntRelation(this.familyTree)
-							.getMembers(member)
-							.map((familyMember) => {
-								return familyMember.getName();
-							})
-							.join(" ");
+						return new ResponseParser(
+							new MaternalAuntRelation(this.familyTree).getMembers(member)
+						).parse();
 
 					case relations.PATERNAL_AUNT:
-						return new PaternalAuntRelation(this.familyTree)
-							.getMembers(member)
-							.map((familyMember) => {
-								return familyMember.getName();
-							})
-							.join(" ");
+						return new ResponseParser(
+							new PaternalAuntRelation(this.familyTree).getMembers(member)
+						).parse();
 
 					case relations.MATERNAL_UNCLE:
-						return new MaternalUncleRelation(this.familyTree)
-							.getMembers(member)
-							.map((familyMember) => {
-								return familyMember.getName();
-							})
-							.join(" ");
+						return new ResponseParser(
+							new MaternalUncleRelation(this.familyTree).getMembers(member)
+						).parse();
 
 					case relations.PATERNAL_UNCLE:
-						return new PaternalUncleRelation(this.familyTree)
-							.getMembers(member)
-							.map((familyMember) => {
-								return familyMember.getName();
-							})
-							.join(" ");
+						return new ResponseParser(
+							new PaternalUncleRelation(this.familyTree).getMembers(member)
+						).parse();
 
 					case relations.FATHER:
-						return new FatherRelation(this.familyTree)
-							.getMembers(member)
-							.map((familyMember) => {
-								return familyMember.getName();
-							})
-							.join(" ");
+						return new ResponseParser(
+							new FatherRelation(this.familyTree).getMembers(member)
+						).parse();
 
 					case relations.MOTHER:
-						return new MotherRelation(this.familyTree)
-							.getMembers(member)
-							.map((familyMember) => {
-								return familyMember.getName();
-							})
-							.join(" ");
+						return new ResponseParser(
+							new MotherRelation(this.familyTree).getMembers(member)
+						).parse();
 				}
 				break;
 		}

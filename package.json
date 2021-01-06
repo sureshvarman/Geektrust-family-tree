@@ -22,7 +22,7 @@
     "build": "tsc && cp seed-data.txt seed-data.txt",
     "coverage": "jest --coverage",
     "start": "npm run build && node dist/geektrust.js",
-    "dev": "ts-node src/main.ts"
+    "dev": "ts-node geektrust.ts"
   },
   "repository": {
     "type": "git",

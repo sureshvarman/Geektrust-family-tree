@@ -10,6 +10,8 @@ export interface IFamilyTree {
 	getMember(name: string): IFamilyMember;
 	setRoot(name: string);
 
+	isMemberExists(name: string);
+
 	getFather(name: string): IFamilyMember;
 	getMother(name: string): IFamilyMember;
 
@@ -82,4 +84,10 @@ export enum messages {
 export interface Irelation {
 	familyTree: IFamilyTree;
 	getMembers(memberName: string): Array<IFamilyMember>;
+}
+
+export interface IParser {
+	familyMembers: Array<IFamilyMember>;
+
+	parse(): string;
 }

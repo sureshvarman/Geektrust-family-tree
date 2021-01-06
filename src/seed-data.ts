@@ -54,6 +54,7 @@ export default class SeedData {
 		}
 
 		if (mother) {
+			console.log("//////", this.familyTree.getMember(mother));
 			this.familyTree.addChild(member1Name, member1Gender, mother);
 		}
 
@@ -67,12 +68,12 @@ export default class SeedData {
 	 */
 	protected getMother(member1, member2) {
 		if (
-			this.familyTree.getMember(member1) &&
+			this.familyTree.isMemberExists(member1) &&
 			this.familyTree.getMember(member1).getGender() == Tgender.FEMALE
 		) {
 			return member1;
 		} else if (
-			this.familyTree.getMember(member2) &&
+			this.familyTree.isMemberExists(member2) &&
 			this.familyTree.getMember(member2).getGender() == Tgender.FEMALE
 		) {
 			return member2;
