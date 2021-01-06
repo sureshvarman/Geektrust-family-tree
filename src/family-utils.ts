@@ -91,3 +91,14 @@ export interface IParser {
 
 	parse(): string;
 }
+
+export type TAddChildInput = {
+	gender: string;
+	child: string;
+	mother: string;
+};
+
+export type TGetRelationInput = {
+	member: string;
+	relationship: string;
+};
