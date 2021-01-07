@@ -13,14 +13,17 @@ export class BrotherInLawsRelation implements Irelation {
 		relationMember: IFamilyMember
 	): Irelation {
 		if (!relationMember) {
-			throw new Error(erroCode.PERSON_ADDITION_FAILED);
+			throw new Error(erroCode.BROTHER_IN_LAW_ADDITION_FAILED);
 		}
 
 		if (member.getGender() !== Tgender.MALE) {
-			throw new Error(erroCode.PERSON_ADDITION_FAILED);
+			throw new Error(erroCode.BROTHER_IN_LAW_ADDITION_FAILED);
 		}
 
-		if (this.member.getSpouse() == relationMember) {
+		if (
+			this.member.getSpouse() == relationMember &&
+			relationMember.getMother()
+		) {
 			relationMember.getMother().addChild(member);
 		} else if (
 			relationMember.getGender() == Tgender.FEMALE &&
@@ -28,6 +31,8 @@ export class BrotherInLawsRelation implements Irelation {
 		) {
 			relationMember.setSpouse(member);
 			member.setSpouse(relationMember);
+		} else {
+			throw new Error(erroCode.BROTHER_IN_LAW_ADDITION_FAILED);
 		}
 
 		return this;
@@ -69,11 +74,11 @@ export class SisterInLawsRelation implements Irelation {
 		relationMember: IFamilyMember
 	): Irelation {
 		if (!relationMember) {
-			throw new Error(erroCode.PERSON_ADDITION_FAILED);
+			throw new Error(erroCode.SISTER_IN_LAW_ADDITION_FAILED);
 		}
 
 		if (member.getGender() !== Tgender.FEMALE) {
-			throw new Error(erroCode.PERSON_ADDITION_FAILED);
+			throw new Error(erroCode.SISTER_IN_LAW_ADDITION_FAILED);
 		}
 
 		if (this.member.getSpouse() == relationMember) {
@@ -85,7 +90,7 @@ export class SisterInLawsRelation implements Irelation {
 			relationMember.setSpouse(member);
 			member.setSpouse(relationMember);
 		} else {
-			throw new Error(erroCode.PERSON_ADDITION_FAILED);
+			throw new Error(erroCode.SISTER_IN_LAW_ADDITION_FAILED);
 		}
 
 		return this;
@@ -124,6 +129,10 @@ export class SiblingsRelation implements Irelation {
 	}
 
 	makeRelation(member: IFamilyMember): Irelation {
+		if (!this.member.getMother()) {
+			throw new Error(erroCode.SIBLINGS_ADDITION_FAILED);
+		}
+
 		this.member.getMother().addChild(member);
 		this.member.getFather().addChild(member);
 
@@ -214,7 +223,11 @@ export class MaternalAuntRelation implements Irelation {
 	}
 
 	makeRelation(member: IFamilyMember): Irelation {
-		this.member.getMother().getMother().addChild(member);
+		if (this.member.getMother() && this.member.getMother().getMother()) {
+			this.member.getMother().getMother().addChild(member);
+		} else {
+			throw new Error(erroCode.MATERNAL_AUNT_ADDITION_FAILED);
+		}
 
 		return this;
 	}
@@ -236,7 +249,11 @@ export class MaternalUncleRelation implements Irelation {
 	}
 
 	makeRelation(member: IFamilyMember): Irelation {
-		this.member.getMother().getMother().addChild(member);
+		if (this.member.getMother() && this.member.getMother().getMother()) {
+			this.member.getMother().getMother().addChild(member);
+		} else {
+			throw new Error(erroCode.MATERNAL_UNCLE_ADDITION_FAILED);
+		}
 
 		return this;
 	}
@@ -283,7 +300,11 @@ export class PaternalAuntRelation implements Irelation {
 	}
 
 	makeRelation(member: IFamilyMember): Irelation {
-		this.member.getFather().getMother().addChild(member);
+		if (this.member.getFather() && this.member.getFather().getMother()) {
+			this.member.getFather().getMother().addChild(member);
+		} else {
+			throw new Error(erroCode.PATERNAL_AUNT_ADDITION_FAILED);
+		}
 
 		return this;
 	}
@@ -305,7 +326,11 @@ export class PaternalUncleRelation implements Irelation {
 	}
 
 	makeRelation(member: IFamilyMember): Irelation {
-		this.member.getFather().getMother().addChild(member);
+		if (this.member.getFather() && this.member.getFather().getMother()) {
+			this.member.getFather().getMother().addChild(member);
+		} else {
+			throw new Error(erroCode.PATERNAL_UNCLE_ADDITION_FAILED);
+		}
 
 		return this;
 	}

@@ -19,3 +19,18 @@ GET_RELATIONSHIP Arit Sister-in-law #NONE
 GET_RELATIONSHIP Vasa Brother-in-law #NONE
 
 ADD_SPOUSE Krithi Kruthi Female #SPOUSE_ADDITION_FAILED
+ADD_SIBLING Krpi Kruthi Female #SIBLINGS_ADDITION_FAILED
+
+ADD_CHILD Vasa ohm male #CHILD_ADDITION_FAILED
+
+add_brother-in-law Jnki Tuka Male Arit #BROTHER_IN_LAW_ADDITION_FAILED
+
+add_sister-in-law Chika Tuka Female Arit #SISTER_IN_LAW_ADDITION_FAILED
+
+add_maternal-uncle Krpi Sila Male #MATERNAL_UNCLE_ADDITION_FAILED
+
+add_maternal-aunt Krpi Shilpa Female #MATERNAL_AUNT_ADDITION_FAILED
+
+add_paternal-uncle Krpi Sila Male #PATERNAL_UNCLE_ADDITION_FAILED
+
+add_paternal-aunt Krpi Shilpa Female #PATERNAL_AUNT_ADDITION_FAILED
