@@ -17,8 +17,8 @@ import FamilyMember from "./family-member";
  * @class FamilyTree
  */
 export default class FamilyTree implements IFamilyTree {
-	db: IDB;
-	root: IFamilyMember;
+	private db: IDB;
+	private root: IFamilyMember;
 
 	/**
 	 * @constructor

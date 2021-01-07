@@ -34,7 +34,7 @@ import {
  * @class App application class, where the application related logics are performed
  */
 export default class App {
-	familyTree: FamilyTree = new FamilyTree(new DB());
+	private familyTree: FamilyTree = new FamilyTree(new DB());
 
 	/**
 	 * App logic, it will do the seed file using the input paramaters
@@ -400,7 +400,7 @@ export default class App {
 	/**
 	 * Function to display the plain text
 	 */
-	showHelpers() {
+	private showHelpers() {
 		console.log(
 			`
 			\n \t\t\t Actions supported
@@ -419,7 +419,7 @@ export default class App {
 	 * with the help of doQuery function
 	 * @param input
 	 */
-	query(input: string) {
+	private query(input: string) {
 		const query = input.match(/[a-zA-Z\_\-]*/);
 		let params = input.split(`${query} `)[1];
 

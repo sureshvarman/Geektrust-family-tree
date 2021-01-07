@@ -8,8 +8,8 @@ import { SpouseRelation, MotherRelation } from "./relations";
  * Class to insert seed data to form an tree
  */
 export default class SeedData {
-	familyTree: IFamilyTree;
-	defaultFileLocation: string = process.cwd() + "/seed-data.txt";
+	private familyTree: IFamilyTree;
+	private defaultFileLocation: string = process.cwd() + "/seed-data.txt";
 
 	/**
 	 * @constructor

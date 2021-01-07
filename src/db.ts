@@ -12,8 +12,4 @@ export default class DB implements IDB {
 	get(name: string): IFamilyMember {
 		return this.dataSet[name];
 	}
-
-	clear() {
-		this.dataSet = {};
-	}
 }
