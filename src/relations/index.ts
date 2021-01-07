@@ -83,8 +83,8 @@ export class SisterInLawsRelation implements Irelation {
 
 		let wifeOfSibilings = this.member
 			.getSiblings(Tgender.MALE)
-			.filter((sister) => sister.getSpouse())
-			.map((sister) => sister.getSpouse());
+			.filter((brother) => brother.getSpouse())
+			.map((brother) => brother.getSpouse());
 
 		sisterInLaws = sisterInLaws.concat(wifeOfSibilings);
 
@@ -247,6 +247,8 @@ export class MotherRelation implements Irelation {
 	makeRelation(member: IFamilyMember): Irelation {
 		this.member.setMother(member);
 		this.member.setFather(member.getSpouse());
+
+		member.addChild(this.member);
 
 		return this;
 	}

@@ -4,11 +4,12 @@ import DB from "./db";
 
 import {
 	Tgender,
-	actions,
-	relations,
+	Operations,
+	Relations,
 	TAddChildInput,
 	TGetRelationInput,
 	messages,
+	QueryType,
 } from "./family-utils";
 import { readFileSync } from "fs";
 
@@ -81,106 +82,124 @@ export default class App {
 
 	/**
 	 * Function to query the relationships
-	 * @param {string} member
-	 * @param {string} relationship
+	 * @param {string} queryParams
 	 */
-	protected queryRelation(member: string, relationship: string) {
-		switch (relationship.toLowerCase()) {
-			case relations.SPOUSE:
+	protected queryRelation(queryParams: string) {
+		const relationQueryInput = this.parseGetRelationInput(queryParams);
+		switch (relationQueryInput.relationship.toLowerCase()) {
+			case Relations.SPOUSE:
 				return new ResponseParser(
 					this.familyTree
-						.buildRelation(member, new SpouseRelation())
+						.buildRelation(relationQueryInput.member, new SpouseRelation())
 						.getMembers()
 				).parse();
 
-			case relations.DAUGHTER:
+			case Relations.DAUGHTER:
 				return new ResponseParser(
 					this.familyTree
-						.buildRelation(member, new ChildRelation())
+						.buildRelation(relationQueryInput.member, new ChildRelation())
 						.getMembers(Tgender.FEMALE)
 				).parse();
 
-			case relations.SON:
+			case Relations.SON:
 				return new ResponseParser(
 					this.familyTree
-						.buildRelation(member, new ChildRelation())
+						.buildRelation(relationQueryInput.member, new ChildRelation())
 						.getMembers(Tgender.MALE)
 				).parse();
 
-			case relations.SIBLINGS:
+			case Relations.SIBLINGS:
 				return new ResponseParser(
 					this.familyTree
-						.buildRelation(member, new SiblingsRelation())
+						.buildRelation(relationQueryInput.member, new SiblingsRelation())
 						.getMembers()
 				).parse();
 
-			case relations.BROTHER:
+			case Relations.BROTHER:
 				return new ResponseParser(
 					this.familyTree
-						.buildRelation(member, new SiblingsRelation())
+						.buildRelation(relationQueryInput.member, new SiblingsRelation())
 						.getMembers(Tgender.MALE)
 				).parse();
 
-			case relations.SISTER:
+			case Relations.SISTER:
 				return new ResponseParser(
 					this.familyTree
-						.buildRelation(member, new SiblingsRelation())
+						.buildRelation(relationQueryInput.member, new SiblingsRelation())
 						.getMembers(Tgender.FEMALE)
 				).parse();
 
-			case relations.SISTER_IN_LAW:
+			case Relations.SISTER_IN_LAW:
 				return new ResponseParser(
 					this.familyTree
-						.buildRelation(member, new SisterInLawsRelation())
+						.buildRelation(
+							relationQueryInput.member,
+							new SisterInLawsRelation()
+						)
 						.getMembers()
 				).parse();
 
-			case relations.BROTHER_IN_LAW:
+			case Relations.BROTHER_IN_LAW:
 				return new ResponseParser(
 					this.familyTree
-						.buildRelation(member, new BrotherInLawsRelation())
+						.buildRelation(
+							relationQueryInput.member,
+							new BrotherInLawsRelation()
+						)
 						.getMembers()
 				).parse();
 
-			case relations.MATERNAL_AUNT:
+			case Relations.MATERNAL_AUNT:
 				return new ResponseParser(
 					this.familyTree
-						.buildRelation(member, new MaternalAuntRelation())
+						.buildRelation(
+							relationQueryInput.member,
+							new MaternalAuntRelation()
+						)
 						.getMembers()
 				).parse();
 
-			case relations.PATERNAL_AUNT:
+			case Relations.PATERNAL_AUNT:
 				return new ResponseParser(
 					this.familyTree
-						.buildRelation(member, new PaternalAuntRelation())
+						.buildRelation(
+							relationQueryInput.member,
+							new PaternalAuntRelation()
+						)
 						.getMembers()
 				).parse();
 
-			case relations.MATERNAL_UNCLE:
+			case Relations.MATERNAL_UNCLE:
 				return new ResponseParser(
 					this.familyTree
-						.buildRelation(member, new MaternalUncleRelation())
+						.buildRelation(
+							relationQueryInput.member,
+							new MaternalUncleRelation()
+						)
 						.getMembers()
 				).parse();
 
-			case relations.PATERNAL_UNCLE:
+			case Relations.PATERNAL_UNCLE:
 				return new ResponseParser(
 					this.familyTree
-						.buildRelation(member, new PaternalUncleRelation())
+						.buildRelation(
+							relationQueryInput.member,
+							new PaternalUncleRelation()
+						)
 						.getMembers()
 				).parse();
 
-			case relations.FATHER:
+			case Relations.FATHER:
 				return new ResponseParser(
 					this.familyTree
-						.buildRelation(member, new FatherRelation())
+						.buildRelation(relationQueryInput.member, new FatherRelation())
 						.getMembers()
 				).parse();
 
-			case relations.MOTHER:
+			case Relations.MOTHER:
 				return new ResponseParser(
 					this.familyTree
-						.buildRelation(member, new MotherRelation())
+						.buildRelation(relationQueryInput.member, new MotherRelation())
 						.getMembers()
 				).parse();
 
@@ -189,14 +208,9 @@ export default class App {
 		}
 	}
 
-	/**
-	 * Function to execute given actions
-	 * @param action
-	 * @param name
-	 */
-	protected doQuery(query: string, queryParams: string) {
-		switch (query.toLowerCase()) {
-			case actions.ADD_CHILD:
+	protected addMember(operation: string, queryParams: string) {
+		switch (operation.toLowerCase()) {
+			case Operations.ADD_CHILD:
 				const childQueryInput = this.parseAddChildInput(queryParams);
 
 				const childMember = this.familyTree
@@ -213,13 +227,40 @@ export default class App {
 					.makeRelation(childMember);
 
 				return messages.CHILD_ADDITION_SUCCEEDED;
+		}
+	}
 
-			case actions.GET_RELATIONSHIP:
-				const relationQueryInput = this.parseGetRelationInput(queryParams);
-				return this.queryRelation(
-					relationQueryInput.member,
-					relationQueryInput.relationship
-				);
+	/**
+	 * Function to get the query type
+	 * @param {string} queryString
+	 *
+	 * @returns {string}
+	 */
+	protected getQueryType(queryString: string) {
+		const query = queryString.split("_");
+		const operation = query[0];
+
+		if (operation.toLowerCase() == QueryType.ADDITTION.toLowerCase()) {
+			return QueryType.ADDITTION;
+		}
+
+		return QueryType.GET_RELATIONSHIP;
+	}
+
+	/**
+	 * Function to execute given actions
+	 * @param action
+	 * @param name
+	 */
+	protected doQuery(query: string, queryParams: string) {
+		const queryType = this.getQueryType(query);
+
+		switch (queryType) {
+			case QueryType.ADDITTION:
+				return this.addMember(query, queryParams);
+
+			case QueryType.GET_RELATIONSHIP:
+				return this.queryRelation(queryParams);
 		}
 	}
 
@@ -231,11 +272,11 @@ export default class App {
 			`
 			\n \t\t\t Actions supported
 			\n ------------------------------------------------------------------------
-			\n 1. ${actions.ADD_CHILD} 
-			\n \t\tFor e.g. ${actions.ADD_CHILD} <mother name> <child name> <gender(male|female)>
-			\n 2. ${actions.GET_RELATIONSHIP} 
-			\n \t\tFor e.g. ${actions.GET_RELATIONSHIP} <name> <relationship>
-			\n \t\t i.e. relationship = ${relations.FATHER} ${relations.MOTHER} ${relations.PATERNAL_UNCLE}, ${relations.MATERNAL_UNCLE}, ${relations.PATERNAL_AUNT}, ${relations.MATERNAL_AUNT}, ${relations.SISTER_IN_LAW}, ${relations.SON}, ${relations.DAUGHTER}, ${relations.SIBLINGS}, ${relations.SPOUSE}, ${relations.BROTHER}, ${relations.SISTER}
+			\n 1. ${Operations.ADD_CHILD} 
+			\n \t\tFor e.g. ${Operations.ADD_CHILD} <mother name> <child name> <gender(male|female)>
+			\n 2. ${Operations.GET_RELATIONSHIP} 
+			\n \t\tFor e.g. ${Operations.GET_RELATIONSHIP} <name> <relationship>
+			\n \t\t i.e. relationship = ${Relations.FATHER} ${Relations.MOTHER} ${Relations.PATERNAL_UNCLE}, ${Relations.MATERNAL_UNCLE}, ${Relations.PATERNAL_AUNT}, ${Relations.MATERNAL_AUNT}, ${Relations.SISTER_IN_LAW}, ${Relations.SON}, ${Relations.DAUGHTER}, ${Relations.SIBLINGS}, ${Relations.SPOUSE}, ${Relations.BROTHER}, ${Relations.SISTER}
 			`
 		);
 	}

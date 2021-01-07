@@ -39,7 +39,7 @@ export enum Tgender {
 	FEMALE = "female",
 }
 
-export enum relations {
+export enum Relations {
 	PATERNAL_UNCLE = "paternal-uncle",
 	MATERNAL_UNCLE = "maternal-uncle",
 	PATERNAL_AUNT = "paternal-aunt",
@@ -56,8 +56,28 @@ export enum relations {
 	MOTHER = "mother",
 }
 
-export enum actions {
+export enum Operations {
+	GET_RELATIONSHIP = "get_relationship",
+
+	ADD_PATERNAL_UNCLE = "add_paternal-uncle",
+	ADD_MATERNAL_UNCLE = "add_maternal-uncle",
+	ADD_PATERNAL_AUNT = "add_paternal-aunt",
+	ADD_MATERNAL_AUNT = "add_maternal-aunt",
+	ADD_SISTER_IN_LAW = "add_sister-in-law",
+	ADD_BROTHER_IN_LAW = "add_brother-in-law",
+	ADD_SON = "add_son",
+	ADD_DAUGHTER = "add_daughter",
+	ADD_SIBLINGS = "add_siblings",
+	ADD_SPOUSE = "add_spouse",
+	ADD_BROTHER = "add_brother",
+	ADD_SISTER = "add_sister",
+	ADD_FATHER = "add_father",
+	ADD_MOTHER = "add_mother",
 	ADD_CHILD = "add_child",
+}
+
+export enum QueryType {
+	ADDITTION = "add",
 	GET_RELATIONSHIP = "get_relationship",
 }
 
