@@ -6,10 +6,11 @@ import {
 	Tgender,
 	Operations,
 	Relations,
-	TAddChildInput,
 	TGetRelationInput,
 	messages,
 	QueryType,
+	TAddMemberInput,
+	Irelation,
 } from "./family-utils";
 import { readFileSync } from "fs";
 
@@ -57,14 +58,48 @@ export default class App {
 	 * Function to parse the input for the child input
 	 * @param {string} queryParams
 	 */
-	protected parseAddChildInput(queryParams: string): TAddChildInput {
+	protected parseAddMemberInput(queryParams: string): TAddMemberInput {
 		const params = this.parseInput(queryParams);
 
 		return {
-			gender: params[2],
-			child: params[1],
-			mother: params[0],
+			relationMember: params[0],
+			firstMember: params[1],
+			gender:
+				params[2] && params[2].toLowerCase() == Tgender.MALE
+					? Tgender.MALE
+					: Tgender.FEMALE,
+			viaMember: params[3],
 		};
+	}
+
+	/**
+	 * Function to build relation using Irelation
+	 * @param {Irelation} relation Irelation to be build
+	 * @param {string} firstMember first member stirng
+	 * @param {Tgender} gender gender as string
+	 * @param {string} relationMember relationmember string
+	 * @param {string} viaMember via member string
+	 */
+	protected buildRelation(
+		relation: Irelation,
+		firstMember: string,
+		gender: Tgender,
+		relationMember: string,
+		viaMember?: string
+	) {
+		const member = this.familyTree
+			.addMember(firstMember, gender)
+			.getMember(firstMember);
+
+		if (viaMember) {
+			this.familyTree
+				.buildRelation(relationMember, relation)
+				.makeRelation(member, this.familyTree.getMember(viaMember));
+		} else {
+			this.familyTree
+				.buildRelation(relationMember, relation)
+				.makeRelation(member);
+		}
 	}
 
 	/**
@@ -208,25 +243,123 @@ export default class App {
 		}
 	}
 
+	/**
+	 * Function to decide on member addition
+	 * @param {string} operation
+	 * @param {string} queryParams
+	 *
+	 * @returns {string}
+	 */
 	protected addMember(operation: string, queryParams: string) {
 		switch (operation.toLowerCase()) {
 			case Operations.ADD_CHILD:
-				const childQueryInput = this.parseAddChildInput(queryParams);
+				const childQueryInput = this.parseAddMemberInput(queryParams);
 
-				const childMember = this.familyTree
-					.addMember(
-						childQueryInput.child,
-						childQueryInput.gender == Tgender.MALE
-							? Tgender.MALE
-							: Tgender.FEMALE
-					)
-					.getMember(childQueryInput.child);
-
-				this.familyTree
-					.buildRelation(childQueryInput.mother, new ChildRelation())
-					.makeRelation(childMember);
+				this.buildRelation(
+					new ChildRelation(),
+					childQueryInput.firstMember,
+					childQueryInput.gender,
+					childQueryInput.relationMember
+				);
 
 				return messages.CHILD_ADDITION_SUCCEEDED;
+
+			case Operations.ADD_SPOUSE:
+				const spouseQueryInput = this.parseAddMemberInput(queryParams);
+
+				this.buildRelation(
+					new SpouseRelation(),
+					spouseQueryInput.firstMember,
+					spouseQueryInput.gender,
+					spouseQueryInput.relationMember
+				);
+				return messages.SPOUSE_ADDITION_SUCCEEDED;
+
+			case Operations.ADD_SIBLING:
+				const siblingQueryInput = this.parseAddMemberInput(queryParams);
+
+				this.buildRelation(
+					new SiblingsRelation(),
+					siblingQueryInput.firstMember,
+					siblingQueryInput.gender,
+					siblingQueryInput.relationMember
+				);
+				return messages.SIBLINGS_ADDITION_SUCCEEDED;
+
+			case Operations.ADD_SISTER_IN_LAW:
+				const sisternInLawQueryInput = this.parseAddMemberInput(queryParams);
+
+				this.buildRelation(
+					new SisterInLawsRelation(),
+					sisternInLawQueryInput.firstMember,
+					sisternInLawQueryInput.gender,
+					sisternInLawQueryInput.relationMember,
+					sisternInLawQueryInput.viaMember
+				);
+				return messages.SISTER_IN_LAW_ADDITION_SUCCEEDED;
+
+			case Operations.ADD_BROTHER_IN_LAW:
+				const brotherInLawQueryInput = this.parseAddMemberInput(queryParams);
+
+				this.buildRelation(
+					new BrotherInLawsRelation(),
+					brotherInLawQueryInput.firstMember,
+					brotherInLawQueryInput.gender,
+					brotherInLawQueryInput.relationMember,
+					brotherInLawQueryInput.viaMember
+				);
+				return messages.BROTHER_IN_LAW_ADDITION_SUCCEEDED;
+
+			case Operations.ADD_PATERNAL_UNCLE:
+				const paternalUncleQueryInput = this.parseAddMemberInput(queryParams);
+
+				this.buildRelation(
+					new PaternalUncleRelation(),
+					paternalUncleQueryInput.firstMember,
+					paternalUncleQueryInput.gender,
+					paternalUncleQueryInput.relationMember,
+					paternalUncleQueryInput.viaMember
+				);
+				return messages.PATERNAL_UNCLE_ADDITION_SUCCEEDED;
+
+			case Operations.ADD_MATERNAL_UNCLE:
+				const maternalUncleQueryInput = this.parseAddMemberInput(queryParams);
+
+				this.buildRelation(
+					new MaternalUncleRelation(),
+					maternalUncleQueryInput.firstMember,
+					maternalUncleQueryInput.gender,
+					maternalUncleQueryInput.relationMember,
+					maternalUncleQueryInput.viaMember
+				);
+				return messages.MATERNAL_UNCLE_ADDITION_SUCCEEDED;
+
+			case Operations.ADD_PATERNAL_AUNT:
+				const paternalAuntQueryInput = this.parseAddMemberInput(queryParams);
+
+				this.buildRelation(
+					new PaternalAuntRelation(),
+					paternalAuntQueryInput.firstMember,
+					paternalAuntQueryInput.gender,
+					paternalAuntQueryInput.relationMember,
+					paternalAuntQueryInput.viaMember
+				);
+				return messages.PATERNAL_AUNT_ADDITION_SUCCEEDED;
+
+			case Operations.ADD_MATERNAL_AUNT:
+				const maternalAuntQueryInput = this.parseAddMemberInput(queryParams);
+
+				this.buildRelation(
+					new MaternalAuntRelation(),
+					maternalAuntQueryInput.firstMember,
+					maternalAuntQueryInput.gender,
+					maternalAuntQueryInput.relationMember,
+					maternalAuntQueryInput.viaMember
+				);
+				return messages.MATERNAL_AUNT_ADDITION_SUCCEEDED;
+
+			default:
+				return "";
 		}
 	}
 
@@ -287,8 +420,11 @@ export default class App {
 	 * @param input
 	 */
 	query(input: string) {
-		const query = input.match(/[a-zA-Z\_]*/);
-		const params = input.split(`${query} `)[1];
+		const query = input.match(/[a-zA-Z\_\-]*/);
+		let params = input.split(`${query} `)[1];
+
+		params = params.substr(0, params.indexOf("#") || params.length);
+		params = params.replace(/ $/, "");
 
 		try {
 			const result = this.doQuery(query[0], params);

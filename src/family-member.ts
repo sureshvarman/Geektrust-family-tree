@@ -136,7 +136,7 @@ export default class FamilyMember implements IFamilyMember {
 	 */
 	setFather(father: IFamilyMember) {
 		if (father.getGender() !== Tgender.MALE) {
-			throw new Error("Cannot be an mother..");
+			throw new Error("Cannot be an father..");
 		}
 
 		this.father = father;
@@ -148,5 +148,13 @@ export default class FamilyMember implements IFamilyMember {
 	 */
 	addChild(child: IFamilyMember) {
 		this.children.push(child);
+
+		if (this.getGender() == Tgender.FEMALE) {
+			child.setMother(this);
+			child.setFather(this.getSpouse());
+		} else {
+			child.setFather(this);
+			child.setMother(this.getSpouse());
+		}
 	}
 }

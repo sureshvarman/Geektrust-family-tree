@@ -29,3 +29,36 @@ GET_RELATIONSHIP Asva Sister #Atya
 
 GET_RELATIONSHIP Chika Mother #Lika
 
+ADD_SPOUSE Chika Chuka Male #SPOUSE_ADDITION_SUCCEEDED
+
+GET_RELATIONSHIP Chuka Spouse #Chika
+
+ADD_SIBLING Lavnya Hema Female #SIBLINGS_ADDITION_SUCCEEDED
+
+GET_RELATIONSHIP Hema Siblings #Laki Lavnya
+
+add_sister-in-law Lavnya Luki Female Laki #SISTER_IN_LAW_ADDITION_SUCCEEDED
+
+GET_RELATIONSHIP Lavnya Sister-In-Law #Luki
+
+add_brother-in-law Laki Tanu Male Lavnya #BROTHER_IN_LAW_ADDITION_SUCCEEDED
+
+add_paternal-uncle Chika Mayan Male #PATERNAL_UNCLE_ADDITION_SUCCEEDED
+
+add_paternal-aunt Chika Maya Female #PATERNAL_AUNT_ADDITION_SUCCEEDED
+
+GET_RELATIONSHIP Tritha Paternal-Uncle #Ish Vich Aras Mayan
+
+GET_RELATIONSHIP Chika Paternal-Aunt #Satya Maya
+
+add_maternal-uncle Vyas Sila Male #MATERNAL_UNCLE_ADDITION_SUCCEEDED
+
+add_maternal-aunt Vyas Shilpa Female #MATERNAL_AUNT_ADDITION_SUCCEEDED
+
+GET_RELATIONSHIP Ahit Paternal-Aunt #Satya Maya Shilpa
+
+GET_RELATIONSHIP Ahit Paternal-Uncle #Chit Ish Vich Mayan Sila
+
+GET_RELATIONSHIP Ahit unknown #
+
+ADD_UNKNOWN unknown #

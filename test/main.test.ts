@@ -8,7 +8,7 @@ import App from "../src/app";
 describe("Problem", function () {
 	const application = new App();
 
-	application.showHelpers();
+	//application.showHelpers();
 
 	let positiveData = readFileSync(
 		process.cwd() + "/test/inputs/test-positive.txt",
@@ -41,13 +41,14 @@ describe("Problem", function () {
 			if (data) {
 				const inputs = data.split("#");
 				const expectedOutput = inputs[1];
-				const input = inputs[0];
 
 				expected += expectedOutput ? " " + expectedOutput : "";
-
-				application.query(input);
 			}
 		}
+
+		application.parseInputFile(
+			process.cwd() + "/test/inputs/test-positive.txt"
+		);
 
 		expect(output).toBe(expected);
 		console.log = log;
@@ -67,13 +68,14 @@ describe("Problem", function () {
 			if (data) {
 				const inputs = data.split("#");
 				const expectedOutput = inputs[1];
-				const input = inputs[0];
 
 				expected += expectedOutput ? " " + expectedOutput : "";
-
-				application.query(input);
 			}
 		}
+
+		application.parseInputFile(
+			process.cwd() + "/test/inputs/test-negative.txt"
+		);
 
 		expect(output).toBe(expected);
 		console.log = log;

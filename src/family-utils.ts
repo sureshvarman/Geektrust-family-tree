@@ -65,12 +65,8 @@ export enum Operations {
 	ADD_MATERNAL_AUNT = "add_maternal-aunt",
 	ADD_SISTER_IN_LAW = "add_sister-in-law",
 	ADD_BROTHER_IN_LAW = "add_brother-in-law",
-	ADD_SON = "add_son",
-	ADD_DAUGHTER = "add_daughter",
-	ADD_SIBLINGS = "add_siblings",
+	ADD_SIBLING = "add_sibling",
 	ADD_SPOUSE = "add_spouse",
-	ADD_BROTHER = "add_brother",
-	ADD_SISTER = "add_sister",
 	ADD_FATHER = "add_father",
 	ADD_MOTHER = "add_mother",
 	ADD_CHILD = "add_child",
@@ -86,10 +82,21 @@ export enum erroCode {
 	CHILD_ADDITION_FAILED = "CHILD_ADDITION_FAILED",
 	NONE = "NONE",
 	PERSON_ADDITION_FAILED = "PERSON_ADDITION_FAILED",
+	SPOUSE_ADDITION_FAILED = "SPOUSE_ADDITION_FAILED"
 }
 
 export enum messages {
 	CHILD_ADDITION_SUCCEEDED = "CHILD_ADDITION_SUCCEEDED",
+	SPOUSE_ADDITION_SUCCEEDED = "SPOUSE_ADDITION_SUCCEEDED",
+	SIBLINGS_ADDITION_SUCCEEDED = "SIBLINGS_ADDITION_SUCCEEDED",
+	MOTHER_ADDITION_SUCCEEDED = "MOTHER_ADDITION_SUCCEEDED",
+	FATHER_ADDITION_SUCCEEDED = "FATHER_ADDITION_SUCCEEDED",
+	SISTER_IN_LAW_ADDITION_SUCCEEDED = "SISTER_IN_LAW_ADDITION_SUCCEEDED",
+	BROTHER_IN_LAW_ADDITION_SUCCEEDED = "BROTHER_IN_LAW_ADDITION_SUCCEEDED",
+	PATERNAL_UNCLE_ADDITION_SUCCEEDED = "PATERNAL_UNCLE_ADDITION_SUCCEEDED",
+	PATERNAL_AUNT_ADDITION_SUCCEEDED = "PATERNAL_AUNT_ADDITION_SUCCEEDED",
+	MATERNAL_AUNT_ADDITION_SUCCEEDED = "MATERNAL_AUNT_ADDITION_SUCCEEDED",
+	MATERNAL_UNCLE_ADDITION_SUCCEEDED = "MATERNAL_UNCLE_ADDITION_SUCCEEDED",
 }
 
 export interface Irelation {
@@ -109,10 +116,11 @@ export interface IParser {
 	parse(): string;
 }
 
-export type TAddChildInput = {
-	gender: string;
-	child: string;
-	mother: string;
+export type TAddMemberInput = {
+	firstMember: string;
+	gender: Tgender;
+	relationMember: string;
+	viaMember?: string;
 };
 
 export type TGetRelationInput = {
