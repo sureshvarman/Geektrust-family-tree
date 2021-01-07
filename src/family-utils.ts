@@ -133,5 +133,10 @@ export type TAddMemberInput = {
 
 export type TGetRelationInput = {
 	member: string;
-	relationship: string;
+	relationship: Relations;
+};
+
+export type TRelationShipBuilder = {
+	Relation: Irelation;
+	gender?: Tgender;
 };

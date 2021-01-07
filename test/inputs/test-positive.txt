@@ -58,7 +58,3 @@ add_maternal-aunt Vyas Shilpa Female #MATERNAL_AUNT_ADDITION_SUCCEEDED
 GET_RELATIONSHIP Ahit Paternal-Aunt #Satya Maya Shilpa
 
 GET_RELATIONSHIP Ahit Paternal-Uncle #Chit Ish Vich Mayan Sila
-
-GET_RELATIONSHIP Ahit unknown #
-
-ADD_UNKNOWN unknown #

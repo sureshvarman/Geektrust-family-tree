@@ -7,7 +7,6 @@ import {
 	Operations,
 	Relations,
 	TGetRelationInput,
-	messages,
 	QueryType,
 	TAddMemberInput,
 	Irelation,
@@ -15,26 +14,14 @@ import {
 import { readFileSync } from "fs";
 
 import ResponseParser from "./response-parser";
-
-import {
-	BrotherInLawsRelation,
-	SisterInLawsRelation,
-	SiblingsRelation,
-	MotherRelation,
-	FatherRelation,
-	SpouseRelation,
-	PaternalAuntRelation,
-	PaternalUncleRelation,
-	MaternalAuntRelation,
-	MaternalUncleRelation,
-	ChildRelation,
-} from "./relations";
+import RelationShipFactory from "./relations/factory";
 
 /**
  * @class App application class, where the application related logics are performed
  */
 export default class App {
 	private familyTree: FamilyTree = new FamilyTree(new DB());
+	private relationFactory = new RelationShipFactory();
 
 	/**
 	 * App logic, it will do the seed file using the input paramaters
@@ -110,7 +97,7 @@ export default class App {
 		const params = this.parseInput(queryParams);
 
 		return {
-			relationship: params[1],
+			relationship: <Relations>params[1].toLowerCase(),
 			member: params[0],
 		};
 	}
@@ -121,126 +108,16 @@ export default class App {
 	 */
 	protected queryRelation(queryParams: string) {
 		const relationQueryInput = this.parseGetRelationInput(queryParams);
-		switch (relationQueryInput.relationship.toLowerCase()) {
-			case Relations.SPOUSE:
-				return new ResponseParser(
-					this.familyTree
-						.buildRelation(relationQueryInput.member, new SpouseRelation())
-						.getMembers()
-				).parse();
 
-			case Relations.DAUGHTER:
-				return new ResponseParser(
-					this.familyTree
-						.buildRelation(relationQueryInput.member, new ChildRelation())
-						.getMembers(Tgender.FEMALE)
-				).parse();
+		const relationShipBuilder = this.relationFactory.getRelationshipParser(
+			relationQueryInput.relationship
+		);
 
-			case Relations.SON:
-				return new ResponseParser(
-					this.familyTree
-						.buildRelation(relationQueryInput.member, new ChildRelation())
-						.getMembers(Tgender.MALE)
-				).parse();
-
-			case Relations.SIBLINGS:
-				return new ResponseParser(
-					this.familyTree
-						.buildRelation(relationQueryInput.member, new SiblingsRelation())
-						.getMembers()
-				).parse();
-
-			case Relations.BROTHER:
-				return new ResponseParser(
-					this.familyTree
-						.buildRelation(relationQueryInput.member, new SiblingsRelation())
-						.getMembers(Tgender.MALE)
-				).parse();
-
-			case Relations.SISTER:
-				return new ResponseParser(
-					this.familyTree
-						.buildRelation(relationQueryInput.member, new SiblingsRelation())
-						.getMembers(Tgender.FEMALE)
-				).parse();
-
-			case Relations.SISTER_IN_LAW:
-				return new ResponseParser(
-					this.familyTree
-						.buildRelation(
-							relationQueryInput.member,
-							new SisterInLawsRelation()
-						)
-						.getMembers()
-				).parse();
-
-			case Relations.BROTHER_IN_LAW:
-				return new ResponseParser(
-					this.familyTree
-						.buildRelation(
-							relationQueryInput.member,
-							new BrotherInLawsRelation()
-						)
-						.getMembers()
-				).parse();
-
-			case Relations.MATERNAL_AUNT:
-				return new ResponseParser(
-					this.familyTree
-						.buildRelation(
-							relationQueryInput.member,
-							new MaternalAuntRelation()
-						)
-						.getMembers()
-				).parse();
-
-			case Relations.PATERNAL_AUNT:
-				return new ResponseParser(
-					this.familyTree
-						.buildRelation(
-							relationQueryInput.member,
-							new PaternalAuntRelation()
-						)
-						.getMembers()
-				).parse();
-
-			case Relations.MATERNAL_UNCLE:
-				return new ResponseParser(
-					this.familyTree
-						.buildRelation(
-							relationQueryInput.member,
-							new MaternalUncleRelation()
-						)
-						.getMembers()
-				).parse();
-
-			case Relations.PATERNAL_UNCLE:
-				return new ResponseParser(
-					this.familyTree
-						.buildRelation(
-							relationQueryInput.member,
-							new PaternalUncleRelation()
-						)
-						.getMembers()
-				).parse();
-
-			case Relations.FATHER:
-				return new ResponseParser(
-					this.familyTree
-						.buildRelation(relationQueryInput.member, new FatherRelation())
-						.getMembers()
-				).parse();
-
-			case Relations.MOTHER:
-				return new ResponseParser(
-					this.familyTree
-						.buildRelation(relationQueryInput.member, new MotherRelation())
-						.getMembers()
-				).parse();
-
-			default:
-				return "";
-		}
+		return new ResponseParser(
+			this.familyTree
+				.buildRelation(relationQueryInput.member, relationShipBuilder.Relation)
+				.getMembers(relationShipBuilder.gender)
+		).parse();
 	}
 
 	/**
@@ -251,116 +128,23 @@ export default class App {
 	 * @returns {string}
 	 */
 	protected addMember(operation: string, queryParams: string) {
-		switch (operation.toLowerCase()) {
-			case Operations.ADD_CHILD:
-				const childQueryInput = this.parseAddMemberInput(queryParams);
+		const parseQueryInput = this.parseAddMemberInput(queryParams);
 
-				this.buildRelation(
-					new ChildRelation(),
-					childQueryInput.firstMember,
-					childQueryInput.gender,
-					childQueryInput.relationMember
-				);
+		const relationShipBuilder = this.relationFactory.getRelationshipBuilder(
+			<Operations>operation.toLowerCase()
+		);
 
-				return messages.CHILD_ADDITION_SUCCEEDED;
+		this.buildRelation(
+			relationShipBuilder.Relation,
+			parseQueryInput.firstMember,
+			parseQueryInput.gender,
+			parseQueryInput.relationMember,
+			parseQueryInput.viaMember
+		);
 
-			case Operations.ADD_SPOUSE:
-				const spouseQueryInput = this.parseAddMemberInput(queryParams);
-
-				this.buildRelation(
-					new SpouseRelation(),
-					spouseQueryInput.firstMember,
-					spouseQueryInput.gender,
-					spouseQueryInput.relationMember
-				);
-				return messages.SPOUSE_ADDITION_SUCCEEDED;
-
-			case Operations.ADD_SIBLING:
-				const siblingQueryInput = this.parseAddMemberInput(queryParams);
-
-				this.buildRelation(
-					new SiblingsRelation(),
-					siblingQueryInput.firstMember,
-					siblingQueryInput.gender,
-					siblingQueryInput.relationMember
-				);
-				return messages.SIBLINGS_ADDITION_SUCCEEDED;
-
-			case Operations.ADD_SISTER_IN_LAW:
-				const sisternInLawQueryInput = this.parseAddMemberInput(queryParams);
-
-				this.buildRelation(
-					new SisterInLawsRelation(),
-					sisternInLawQueryInput.firstMember,
-					sisternInLawQueryInput.gender,
-					sisternInLawQueryInput.relationMember,
-					sisternInLawQueryInput.viaMember
-				);
-				return messages.SISTER_IN_LAW_ADDITION_SUCCEEDED;
-
-			case Operations.ADD_BROTHER_IN_LAW:
-				const brotherInLawQueryInput = this.parseAddMemberInput(queryParams);
-
-				this.buildRelation(
-					new BrotherInLawsRelation(),
-					brotherInLawQueryInput.firstMember,
-					brotherInLawQueryInput.gender,
-					brotherInLawQueryInput.relationMember,
-					brotherInLawQueryInput.viaMember
-				);
-				return messages.BROTHER_IN_LAW_ADDITION_SUCCEEDED;
-
-			case Operations.ADD_PATERNAL_UNCLE:
-				const paternalUncleQueryInput = this.parseAddMemberInput(queryParams);
-
-				this.buildRelation(
-					new PaternalUncleRelation(),
-					paternalUncleQueryInput.firstMember,
-					paternalUncleQueryInput.gender,
-					paternalUncleQueryInput.relationMember,
-					paternalUncleQueryInput.viaMember
-				);
-				return messages.PATERNAL_UNCLE_ADDITION_SUCCEEDED;
-
-			case Operations.ADD_MATERNAL_UNCLE:
-				const maternalUncleQueryInput = this.parseAddMemberInput(queryParams);
-
-				this.buildRelation(
-					new MaternalUncleRelation(),
-					maternalUncleQueryInput.firstMember,
-					maternalUncleQueryInput.gender,
-					maternalUncleQueryInput.relationMember,
-					maternalUncleQueryInput.viaMember
-				);
-				return messages.MATERNAL_UNCLE_ADDITION_SUCCEEDED;
-
-			case Operations.ADD_PATERNAL_AUNT:
-				const paternalAuntQueryInput = this.parseAddMemberInput(queryParams);
-
-				this.buildRelation(
-					new PaternalAuntRelation(),
-					paternalAuntQueryInput.firstMember,
-					paternalAuntQueryInput.gender,
-					paternalAuntQueryInput.relationMember,
-					paternalAuntQueryInput.viaMember
-				);
-				return messages.PATERNAL_AUNT_ADDITION_SUCCEEDED;
-
-			case Operations.ADD_MATERNAL_AUNT:
-				const maternalAuntQueryInput = this.parseAddMemberInput(queryParams);
-
-				this.buildRelation(
-					new MaternalAuntRelation(),
-					maternalAuntQueryInput.firstMember,
-					maternalAuntQueryInput.gender,
-					maternalAuntQueryInput.relationMember,
-					maternalAuntQueryInput.viaMember
-				);
-				return messages.MATERNAL_AUNT_ADDITION_SUCCEEDED;
-
-			default:
-				return "";
-		}
+		return this.relationFactory.getRelationShipBuilderMessages(
+			<Operations>operation.toLowerCase()
+		);
 	}
 
 	/**
