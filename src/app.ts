@@ -206,12 +206,10 @@ export default class App {
 	private query(input: string) {
 		const query = input.match(/[a-zA-Z\_\-]*/);
 		let params = input.split(`${query} `)[1];
-
-		params = params.substr(0, params.indexOf("#") || params.length);
-		params = params.replace(/ $/, "");
+		let queryAndExpectation = params.split("#");
 
 		try {
-			const result = this.doQuery(query[0], params);
+			const result = this.doQuery(query[0], queryAndExpectation[0]);
 			console.log(result);
 		} catch (e) {
 			console.log(e.message);
