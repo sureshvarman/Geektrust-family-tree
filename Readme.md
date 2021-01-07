@@ -23,6 +23,8 @@
 
 `Irelation` - `Interface` to declare the function to support multiple relations in a family tree. There are multiple relations exists, which can be used to build relation in tree and query relations in tree.
 
+`RelationShipFactory` - `Factory class` to provide an interface to access the corresponding relations and thier message, adding new relation needs only to touch the `Irelations` and its `RelationShipFactory`, This is not made as an abstract factory, since more relations might exists.
+
 `IDB` - `Interface` to declare the functions to support multi/custom database logics
 `DB` - `Concrete class` to store and retrieve data acts as a `proxy` for database 
 
